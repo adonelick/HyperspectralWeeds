@@ -3,3 +3,9 @@
 # Types of files to ignore putting into the repository
 
 *.pyc
+*.png
+*.jpeg
+*.jpg
+*.tiff
+*.tif
+*.bil
