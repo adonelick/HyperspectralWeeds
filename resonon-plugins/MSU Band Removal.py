@@ -57,8 +57,6 @@ class MSUBandRemoval(CubePlugin):
         minBand = self.minBand.value
         maxBand = self.maxBand.value
 
-        self.wb.postMessage(str(minBand))
-
         for wavelength in wavelengths:
 
             currentBand = self.datacube.getBandAtWavelength(wavelength)
