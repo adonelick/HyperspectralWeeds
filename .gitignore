@@ -1,0 +1,5 @@
+# Written by Andrew Donelick
+# Montana State University
+# Types of files to ignore putting into the repository
+
+*.pyc
