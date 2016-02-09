@@ -50,7 +50,7 @@ class InternalReflectanceCalibration(SelectPlugin):
         correction = reflectances / mean
 
         # Apply the correction to all of the spectra in the datacube
-        reflectanceCube = np.zeros_like(dataCube, dtype=np.float64)
+        reflectanceCube = np.zeros_like(dataCube, dtype=np.float32)
         for i in xrange(lines):
             for j in xrange(samples):
                 reflectanceCube[i, j, :] = correction * dataCube[i, j, :]
@@ -89,7 +89,6 @@ def getSpectralonReflectance(wavelength):
     lowerReflectance = SPECTRALON_REFLECTANCE[lower]
 
     slope = 1.0 * (upperReflectance - lowerReflectance) / SPECTRALON_WAVELENGTH_STEP
-
     return slope * (wavelength - lower) + lowerReflectance
 
 

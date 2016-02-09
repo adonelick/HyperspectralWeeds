@@ -20,5 +20,10 @@ class MyPlugin(CubePlugin):
          self.my_float.interfaceType = INTERFACES.SLIDER
 
     def action(self):
-         my_product = self.my_float.value * 2.5
-         # more plugin logic here....
+        bands = self.datacube.getBandCount()
+        samples = self.datacube.getSampleCount()
+        lines = self.datacube.getLineCount()
+
+        self.wb.postMessage("Bands: " + str(bands))
+        self.wb.postMessage("Samples: " + str(samples))
+        self.wb.postMessage("Lines: " + str(lines))
