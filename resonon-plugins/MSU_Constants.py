@@ -20,10 +20,14 @@ TRAINING_DATA_PATH = "C:\Users\q45d465\Documents\Research\TrainingData.mem"
 TESTING_DATA_PATH = "C:\Users\q45d465\Documents\Research\TestingData.mem"
 SAMPLE_COUNTS_PATH = "C:\Users\q45d465\Documents\Research\SampleCounts.pkl"
 
-CLASSES = ["SUS Kochia", "GR Kochia", "DR Kochia"]
+CLASSES = ["Kochia_SUS", "Kochia_GR", "Kochia_DR", "Wheat", "Barley", "Bean"]
 
 # Information for saving or retrieving the trained ML models
 MODEL_PATH = None
+
+# Spectral bands to be removed when calibrating 
+# Note: removal is optional, and specified if wanted at runtime
+BANDS_TO_REMOVE = [(814.4, 827.85)]
 
 # Wavelength specific reflectance for the Spectralon calibration panel
 # Maps wavelength (nm) to reflectance value

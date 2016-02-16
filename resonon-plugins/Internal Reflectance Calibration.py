@@ -11,11 +11,13 @@ current datacube.
 """
 
 from spectronon.workbench.plugin import SelectPlugin
+from resonon.utils.spec import SpecBool
 from resonon.core.data import util
 from MSU_Constants import SPECTRALON_REFLECTANCE
 from MSU_Constants import MIN_SPECTRALON_WAVELENGTH 
 from MSU_Constants import MAX_SPECTRALON_WAVELENGTH
 from MSU_Constants import SPECTRALON_WAVELENGTH_STEP
+from MSU_Constants import BANDS_TO_REMOVE
 
 import numpy as np
 
@@ -23,6 +25,19 @@ class InternalReflectanceCalibration(SelectPlugin):
     """Calibrate the spectra to reflectance with an internal target""" 
     label = "Internal Reflectance Calibration"
     userLevel = 1
+
+
+    def setup(self):
+        """
+        Set up the calibration process. Right now, we only check if the user
+        wants to remove some spectral bands from the calibrated datacube.
+
+        :return: (None)
+        """
+
+        message = "Remove bad spectral bands?"
+        self.removeBands = SpecBool(message, defaultValue=True)
+
 
     def action(self):
         """
@@ -36,6 +51,7 @@ class InternalReflectanceCalibration(SelectPlugin):
 
         # Retrieve useful information about the datacube and the user selection
         dataCube = self.datacube.getArray(asBIP=True)
+        datacubeName = self.datacube.getName()
         pointlist = self.pointlist
         wavelengths = self.datacube.getWavelengthList()
 
@@ -55,13 +71,24 @@ class InternalReflectanceCalibration(SelectPlugin):
             for j in xrange(samples):
                 reflectanceCube[i, j, :] = correction * dataCube[i, j, :]
 
+        # If desired, remove the spectral bands from the calibrated datacube
+        if self.removeBands:
+            for removal in BANDS_TO_REMOVE:
+                lowerLimit = removal[0]
+                upperLimit = removal[1]
+
+                for i, wavelength in enumerate(wavelengths):
+                    if (lowerLimit <= wavelength <= upperLimit):
+                        reflectanceCube[:,:,i] = np.NaN
+
         calibratedDatacube = createNewDatacube(self.wb, reflectanceCube,
                                                wavelengths,
                                                self.datacube.getRotationString())
 
         # Place the new, calibrated datacube on the workbench for saving,
         # manipulation, or whatever you want to do with it
-        self.wb.addCube(calibratedDatacube, name="Calibrated Reflectance Datacube")
+        newName = datacubeName + "_Reflectance"
+        self.wb.addCube(calibratedDatacube, name=newName)
 
 
 def getSpectralonReflectance(wavelength):
