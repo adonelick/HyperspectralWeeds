@@ -14,6 +14,49 @@ import cPickle
 import numpy as np
 
 
+def loadCSV(filepath):
+    """
+    Loads in a matrix of data from a CSV file. This function 
+    simply returns the data contained in the file - nothing more.
+
+    :param filepath: (string) Path of CSV file to load
+
+    :return: (np.array) 2-d numpy array of floats
+    """
+
+    return np.loadtxt(filepath, delimiter=',')
+
+
+def getDatafileNames(directory, keywords=[]):
+    """
+    Returns the list of files within a given directory which
+    are CSV files (useful data files).
+
+    :param directory: (string) Directory to search for datafiles
+    :param keywords: (list of strings) keywords to be included in all file names
+
+    :return: (list of strings) CSV filenames within the directory
+    """
+
+    filenames = []
+
+    if keywords == []:
+        for name in os.listdir(directory):
+            if name.endswith('.csv'):
+                filenames.append(name)
+    else:
+        for name in os.listdir(directory):
+            if name.endswith('.csv'):
+
+                containsKeyword = False
+                for kw in keywords:
+                    containsKeyword |= (kw in name)
+
+                if containsKeyword:
+                    filenames.append(name)
+    return filenames
+
+
 def loadTrainingData():
     """
     Loads the training data from disk. Note, because of the potential

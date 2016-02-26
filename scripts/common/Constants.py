@@ -9,7 +9,15 @@ files, such as the names of the classes being classified,
 etc.
 """
 
+# Store where the data is located
+DATA_PATHS = {"2015_1211" : "W:\Huntly Greenhouse 12-11-2015\Spectra CSV Files"}
 
-LABEL_TO_INDEX = {}
 
-INDEX_TO_LABEL = {}
+# Label-to-index and index-to-label dictionaries for the resistance classes
+LABEL_TO_INDEX = {'SUS' : 0,
+                  'GR'  : 1,
+                  'DR'  : 2 }
+
+INDEX_TO_LABEL = {0 : 'SUS',
+                  1 : 'GR',
+                  2 : 'DR'}
