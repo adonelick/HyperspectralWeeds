@@ -42,10 +42,12 @@ def getDatafileNames(directory, keywords=[]):
 
     if keywords == []:
         for name in os.listdir(directory):
+            name = name.lower()
             if name.endswith('.csv'):
                 filenames.append(name)
     else:
         for name in os.listdir(directory):
+            name = name.lower()
             if name.endswith('.csv'):
 
                 containsKeyword = False
