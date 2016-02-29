@@ -8,11 +8,12 @@ the user to plot histograms of specified wavelengths in collected data.
 
 Usage:
     
-    python wavelengthHistograms.py [date] [-w wavelengths] [-k keywords]
+    python wavelengthHistograms.py [date] [-w wavelengths] [-k keywords] [-l]
 
     date: Data collection data (ex: 2015_1211)
     wavelengths: Wavelengths in nm you wish to plot (ex: 600)
     keywords: Strings in the filenames to be included in plots
+    leaves: Plot only a single point per leaf vs. all spectra in a leaf
 
 """
 
@@ -32,7 +33,7 @@ from common.WavelengthCalculations import wavelengthToIndex
 BINS = 50
 
 
-def main(date, wavelengths, keywords=[]):
+def main(date, wavelengths, plotLeaves, keywords=[]):
     """
     Plot the histogram of a specified list of wavelengths.
 
@@ -70,14 +71,29 @@ def main(date, wavelengths, keywords=[]):
         # Extract the relevant data from the spectra in the data file
         histogramData = data[:, wavelengthIndices]
 
-        if resistance == SUSCEPTIBLE:
-            pointsSUS = np.append(pointsSUS, histogramData, axis=0)
-        elif resistance == DR_RESISTANT:
-            pointsDR = np.append(pointsDR, histogramData, axis=0)
-        elif resistance == GR_RESISTANT:
-            pointsGR = np.append(pointsGR, histogramData, axis=0)
+        if plotLeaves:
+
+            meanLeaf = map(lambda i: np.mean(histogramData[:,i]), xrange(0, numHistograms))
+
+            if resistance == SUSCEPTIBLE:
+                pointsSUS = np.append(pointsSUS, [meanLeaf], axis=0)
+            elif resistance == DR_RESISTANT:
+                pointsDR = np.append(pointsDR, [meanLeaf], axis=0)
+            elif resistance == GR_RESISTANT:
+                pointsGR = np.append(pointsGR, [meanLeaf], axis=0)
+            else:
+                raise Exception("Unknown resistance type: " + resistance)
+
         else:
-            raise Exception("Unknown resistance type: " + resistance)
+
+            if resistance == SUSCEPTIBLE:
+                pointsSUS = np.append(pointsSUS, histogramData, axis=0)
+            elif resistance == DR_RESISTANT:
+                pointsDR = np.append(pointsDR, histogramData, axis=0)
+            elif resistance == GR_RESISTANT:
+                pointsGR = np.append(pointsGR, histogramData, axis=0)
+            else:
+                raise Exception("Unknown resistance type: " + resistance)
 
     # Ignore the top row of zeros
     pointsDR = pointsDR[1:,:]
@@ -90,13 +106,6 @@ def main(date, wavelengths, keywords=[]):
         x = pointsSUS[:, i]
         y = pointsDR[:, i]
         z = pointsGR[:, i]
-
-        # Make all the vectors the same size  (may not need to do this)
-        x = np.random.choice(x, size=10000, replace=False)
-        y = np.random.choice(y, size=10000, replace=False)
-        z = np.random.choice(z, size=10000, replace=False)
-
-        print x.shape
 
         if np.NaN in x:
             print "Skipping wavelength", wavelength
@@ -121,6 +130,13 @@ def main(date, wavelengths, keywords=[]):
         fValue, pValue = stats.f_oneway(x, y, z)
         print "One way ANOVA p-Value:", pValue
 
+        print "t-test between susceptible and glyphosate:"
+        print "  ", stats.ttest_ind(x, z)
+        print "t-test between susceptible and dicamba:"
+        print "  ", stats.ttest_ind(x, y)
+        print "t-test between dicamba and glyphosate:"
+        print "  ", stats.ttest_ind(y, z)
+
 
         plt.hist(x, BINS, alpha=0.5, label=RESISTANCE_STRINGS[SUSCEPTIBLE])
         plt.hist(y, BINS, alpha=0.5, label=RESISTANCE_STRINGS[DR_RESISTANT])
@@ -141,8 +157,10 @@ if __name__ == '__main__':
                          help='Data collection date YYYY_MMDD')
     parser.add_argument('-w', '--wavelengths', default=WAVELENGTHS, type=float, nargs='*',
                          help="Wavelengths to plot")
+    parser.add_argument('-l', '--leaves', default=False, action='store_true',
+                         help="One leaf -> one sample")
     parser.add_argument('-k', '--keywords', default=[], type=str, nargs='*',
                          help="Filename keywords to include")
     args = parser.parse_args()
 
-    main(args.date[0], args.wavelengths, args.keywords)
+    main(args.date[0], args.wavelengths, args.leaves, args.keywords)
