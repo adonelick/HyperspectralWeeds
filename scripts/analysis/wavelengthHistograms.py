@@ -20,6 +20,7 @@ import argparse
 import os
 import sys
 import numpy as np
+from scipy import stats
 
 import matplotlib.pyplot as plt
 
@@ -90,9 +91,36 @@ def main(date, wavelengths, keywords=[]):
         y = pointsDR[:, i]
         z = pointsGR[:, i]
 
+        # Make all the vectors the same size  (may not need to do this)
+        x = np.random.choice(x, size=10000, replace=False)
+        y = np.random.choice(y, size=10000, replace=False)
+        z = np.random.choice(z, size=10000, replace=False)
+
+        print x.shape
+
         if np.NaN in x:
             print "Skipping wavelength", wavelength
             break
+
+        meanSUS = np.mean(x)
+        meanDR = np.mean(y)
+        meanGR = np.mean(z)
+
+        stdSUS = np.std(x)
+        stdDR = np.std(y)
+        stdGR = np.std(z)
+        
+        print "Mean susceptible reflectance:", meanSUS
+        print "Mean glyphosate reflectance:", meanGR
+        print "Mean dicamba reflectance:", meanDR, '\n'
+
+        print "Susceptible reflectance standard deviation:", stdSUS
+        print "Glyphosate reflectance standard deviation:", stdGR
+        print "Dicamba reflectance standard deviation:", stdDR, '\n'
+
+        fValue, pValue = stats.f_oneway(x, y, z)
+        print "One way ANOVA p-Value:", pValue
+
 
         plt.hist(x, BINS, alpha=0.5, label=RESISTANCE_STRINGS[SUSCEPTIBLE])
         plt.hist(y, BINS, alpha=0.5, label=RESISTANCE_STRINGS[DR_RESISTANT])
