@@ -1,6 +1,7 @@
 from spectronon.workbench.plugin import CubePlugin
 from resonon.utils.spec import SpecFloat
 from resonon.constants import INTERFACES
+import skimage
 
 class MyPlugin(CubePlugin):
     """
@@ -27,3 +28,4 @@ class MyPlugin(CubePlugin):
         self.wb.postMessage("Bands: " + str(bands))
         self.wb.postMessage("Samples: " + str(samples))
         self.wb.postMessage("Lines: " + str(lines))
+        self.wb.postMessage(skimage.__version__)

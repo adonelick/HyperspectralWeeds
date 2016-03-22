@@ -20,7 +20,11 @@ TRAINING_DATA_PATH = "C:\Users\q45d465\Documents\Research\TrainingData.mem"
 TESTING_DATA_PATH = "C:\Users\q45d465\Documents\Research\TestingData.mem"
 SAMPLE_COUNTS_PATH = "C:\Users\q45d465\Documents\Research\SampleCounts.pkl"
 
+TEMP_DIRECTORY = "W:\\temp"
+
 CLASSES = ["Kochia_SUS", "Kochia_GR", "Kochia_DR", "Wheat", "Barley", "Bean"]
+LIGHTING = ["Diffuse", "Direct", "Artificial"]
+SEGMENTATION = ["Grid", "Watershed"]
 
 # Information for saving or retrieving the trained ML models
 MODEL_PATH = None
@@ -63,3 +67,6 @@ SPECTRALON_REFLECTANCE = {
 MIN_SPECTRALON_WAVELENGTH = 300
 MAX_SPECTRALON_WAVELENGTH = 1500
 SPECTRALON_WAVELENGTH_STEP = 50
+
+NDVI_THRESHOLD = 0.3
+

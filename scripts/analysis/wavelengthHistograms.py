@@ -30,7 +30,7 @@ from common import FileIO
 from common.Constants import *
 from common.WavelengthCalculations import wavelengthToIndex
 
-BINS = 50
+BINS = 40
 
 
 def main(date, wavelengths, plotLeaves, keywords=[]):
@@ -45,7 +45,6 @@ def main(date, wavelengths, plotLeaves, keywords=[]):
 
     numHistograms = len(wavelengths)
     wavelengthIndices = map(wavelengthToIndex, wavelengths)
-
 
     # Get the data files we will be looking at
     dataPath = DATA_PATHS[date]
@@ -69,11 +68,15 @@ def main(date, wavelengths, plotLeaves, keywords=[]):
         data = FileIO.loadCSV(filePath)
 
         # Extract the relevant data from the spectra in the data file
-        histogramData = data[:, wavelengthIndices]
+        try:
+            histogramData = data[:, wavelengthIndices]
+        except Exception, e:
+            print "Error with file:", name
+            continue
 
         if plotLeaves:
 
-            meanLeaf = map(lambda i: np.mean(histogramData[:,i]), xrange(0, numHistograms))
+            meanLeaf = map(lambda i: np.mean(histogramData[:,i]), xrange(numHistograms))
 
             if resistance == SUSCEPTIBLE:
                 pointsSUS = np.append(pointsSUS, [meanLeaf], axis=0)
@@ -144,7 +147,7 @@ def main(date, wavelengths, plotLeaves, keywords=[]):
         plt.title('Reflectance Distribution for Wavelength ' + str(wavelength) + ' nm')
         plt.xlabel('Reflectance')
         plt.ylabel('Frequency')
-        plt.legend(loc='upper left')
+        plt.legend(loc='upper right')
         plt.show()
 
 
