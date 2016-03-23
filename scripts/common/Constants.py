@@ -9,14 +9,22 @@ files, such as the names of the classes being classified,
 etc.
 """
 
-# Store where the data is located
-DATA_PATHS = {"2015_1211" : "W:\Huntly Greenhouse 12-11-2015\Spectra CSV Files"}
+# Proportion of data to be used in the training set
+TRAIN_PROPORTION = 0.7
 
+# Store where the data is located
+DATA_DIRECTORIES = {"2015_1211" : "W:\Huntly Greenhouse 12-11-2015\Spectra CSV Files",
+                    "2015_1211_ML" : "W:\Huntly Greenhouse 12-11-2015\Machine Learning Data"}
+
+TRAINING_DATA_PATH = "TrainingData.mem"
+TESTING_DATA_PATH = "TestingData.mem"
+SAMPLE_COUNTS_PATH = "SampleCounts.pkl"
 
 SUSCEPTIBLE = 'sus'
 GR_RESISTANT = 'gr'
 DR_RESISTANT = 'dr'
 
+CLASSES = [SUSCEPTIBLE, GR_RESISTANT, DR_RESISTANT]
 
 # Label-to-index and index-to-label dictionaries for the resistance classes
 LABEL_TO_INDEX = {SUSCEPTIBLE : 0,

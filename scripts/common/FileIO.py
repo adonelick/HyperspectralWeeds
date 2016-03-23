@@ -12,6 +12,8 @@ data, machine learning models, etc.
 import os
 import cPickle
 import numpy as np
+import DataManipulation
+from Constants import *
 
 
 def loadCSV(filepath):
@@ -65,7 +67,7 @@ def loadTrainingData():
     for very large amounts of training data, the training data is returned
     as a numpy memmap.
 
-    :param path: (string) location of the training data
+    :param paths: (list of strings) locations of the training data
 
     :return: tuple containing the training data (row ordered feature vectors),
              as well as the target labels (X, y). X has type np.memmap, and 
@@ -95,6 +97,91 @@ def loadTestingData():
     y = None
 
     return X, y
+
+
+def saveTrainingData(date, X, y):
+    """
+    Saves a given matrix of training data as a np.memmap
+    in the proper location for later use in training machine
+    learning models.
+
+    :param date: (string) Date in which the data was collected (YYYY_MMDD)
+    :param X: (np.array) Array of training features (n_samples x n_features)
+    :param y: (np.array) Array of labels for the training data (n_samples)
+
+    :return: (None)
+    """
+
+    sampleCounts = DataManipulation.loadSampleCounts(date)
+    dataDirectory = DATA_DIRECTORIES[date+"_ML"]
+    trainingDataPath = os.path.join(dataDirectory, TRAINING_DATA_PATH)
+
+    if not os.path.exists(trainingDataPath):
+        # Open the file for the first time to write
+        samples, features = X.shape
+        trainingData = np.memmap(trainingDataPath, 
+                                 mode='w+',
+                                 dtype=np.float32, 
+                                 shape=(samples, features+1))
+
+        trainingData[:, 0] = y
+        trainingData[:, 1:] = X
+
+        # Flush the data to disk and close the memmap
+        del trainingData
+
+    else:
+        DataManipulation.updateTrainingData(date, X, y)
+    
+    # Update the sample counts file
+    for index in y:
+        labelString = INDEX_TO_LABEL[index]
+        sampleCounts[labelString+"_training"] += 1
+    
+    sampleCounts["training"] += len(y)
+    DataManipulation.updateSampleCounts(date, sampleCounts)
+
+
+def saveTestingData(date, X, y):
+    """
+    Saves a given matrix of testing data as a np.memmap
+    in the proper location for later use in testing
+    machine learning models' performance.
+
+    :param date: (string) Date in which the data was collected (YYYY_MMDD)
+    :param X: (np.array) Array of testing features (n_samples x n_features)
+    :param y: (np.array) Array of labels for the testing data (n_samples)
+
+    :return: (None)
+    """
+
+    sampleCounts = DataManipulation.loadSampleCounts(date)
+    dataDirectory = DATA_DIRECTORIES[date+"_ML"]
+    testingDataPath = os.path.join(dataDirectory, TESTING_DATA_PATH)
+
+    if not os.path.exists(testingDataPath):
+        # Open the file for the first time to write
+        samples, features = X.shape
+        testingData = np.memmap(testingDataPath, 
+                                mode='w+',
+                                dtype=np.float32, 
+                                shape=(samples, features+1))
+
+        testingData[:, 0] = y
+        testingData[:, 1:] = X
+
+        # Flush the data to disk and close the memmap
+        del testingData
+    else:
+        DataManipulation.updateTestingData(date, X, y)
+    
+    # Update the sample counts file
+    for index in y:
+        labelString = INDEX_TO_LABEL[index]
+        sampleCounts[labelString+"_testing"] += 1
+    
+    sampleCounts["testing"] += len(y)
+    DataManipulation.updateSampleCounts(date, sampleCounts)
 
 
 def saveModel(model, path):
@@ -128,6 +215,7 @@ def loadModel(path):
         fileHandle.close()
 
     return model
+
 
 # Other possible methods:
 # - saving training/testing data

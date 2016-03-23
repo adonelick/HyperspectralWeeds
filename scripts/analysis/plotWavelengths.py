@@ -48,7 +48,7 @@ def main(date, wavelengths, keywords=[]):
 
 
     # Get the data files we will be looking at
-    dataPath = DATA_PATHS[date]
+    dataPath = DATA_DIRECTORIES[date]
     filesToPlot = FileIO.getDatafileNames(dataPath, ["top"])
 
     pointsDR = []

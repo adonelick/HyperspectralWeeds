@@ -47,7 +47,7 @@ def main(date, wavelengths, plotLeaves, keywords=[]):
     wavelengthIndices = map(wavelengthToIndex, wavelengths)
 
     # Get the data files we will be looking at
-    dataPath = DATA_PATHS[date]
+    dataPath = DATA_DIRECTORIES[date]
     filesToPlot = FileIO.getDatafileNames(dataPath, keywords)
 
     pointsDR = np.zeros((1, numHistograms))
