@@ -39,6 +39,8 @@ INDEX_TO_LABEL = {0 : SUSCEPTIBLE,
                   1 : GR_RESISTANT,
                   2 : DR_RESISTANT}
 
+NUM_WAVELENGTHS = 240
+
 # All 240 wavelengths included in the spectra 
 WAVELENGTHS = [394.6, 396.6528, 398.7056, 400.7584, 402.8112, 404.864,
                406.9168, 408.9696, 411.0224, 413.0752, 415.128, 417.1808,

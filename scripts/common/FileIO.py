@@ -61,40 +61,64 @@ def getDatafileNames(directory, keywords=[]):
     return filenames
 
 
-def loadTrainingData():
+def loadTrainingData(date):
     """
     Loads the training data from disk. Note, because of the potential
     for very large amounts of training data, the training data is returned
     as a numpy memmap.
 
-    :param paths: (list of strings) locations of the training data
+    :param date: (string) Date in which the data was collected (YYYY_MMDD)
 
     :return: tuple containing the training data (row ordered feature vectors),
              as well as the target labels (X, y). X has type np.memmap, and 
              y has type np.array
     """
     
-    X = None
-    y = None
+    dataDirectory = DATA_DIRECTORIES[date+"_ML"]
+    trainingDataPath = os.path.join(dataDirectory, TRAINING_DATA_PATH)
+
+    sampleCounts = DataManipulation.loadSampleCounts(date)
+    trainingSamples = sampleCounts["training"]
+
+    # Open the file for appending
+    trainingData = np.memmap(trainingDataPath, 
+                            mode='r+',
+                            dtype=np.float32,
+                            shape=(trainingSamples, NUM_WAVELENGTHS+1))
+    
+    X = trainingData[:, 1:]
+    y = trainingData[:, 0]
 
     return X, y
 
 
-def loadTestingData():
+def loadTestingData(date):
     """
     Loads the testing data from disk. Note, because of the potential
     for very large amounts of testing data, the testing data is returned
     as a numpy memmap.
 
-    :param path: (string) location of the testing data
+    :param date: (string) Date in which the data was collected (YYYY_MMDD)
 
     :return: tuple containing the testing data (row ordered feature vectors),
              as well as the target labels (X, y). X has type np.memmap, and 
              y has type np.array
     """
+
+    dataDirectory = DATA_DIRECTORIES[date+"_ML"]
+    testingDataPath = os.path.join(dataDirectory, TESTING_DATA_PATH)
+
+    sampleCounts = DataManipulation.loadSampleCounts(date)
+    testingSamples = sampleCounts["testing"]
+
+    # Open the file for appending
+    testingData = np.memmap(testingDataPath, 
+                            mode='r+',
+                            dtype=np.float32,
+                            shape=(testingSamples, NUM_WAVELENGTHS+1))
     
-    X = None
-    y = None
+    X = testingData[:, 1:]
+    y = testingData[:, 0]
 
     return X, y
 
