@@ -1,15 +1,30 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 25 March 2016
+# 26 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
+"""
+This script reduces the dimensionality of the training data to 3 dimensions,
+plots the transformed data in 3d space. The idea is to bring
+out separability between the resistance classes which may be 
+hidden in the dimensionality of the data.
 
+Usage:
+
+    python hyperspectralPCA.py [date] [-s subset]
+
+    date: Data collection date YYYY_MMDD
+    subset: Transform and plot a random subset of the trainng data?
+    
+"""
+
+import argparse
 import numpy as np
 import os
 import sys
-sys.path.append("..")
 import mkl
-import argparse
+sys.path.append("..")
+
 from sklearn.decomposition import IncrementalPCA
 
 import plotly.plotly as py
@@ -22,8 +37,19 @@ from scripts.common import Constants
 NUM_SAMPLES = 1000
 
 
-
 def main(date, takeSubset=False):
+    """
+    Reduces the dimensionality of the training data to 3 dimensions, 
+    plots the transformed data in 3d space. The idea is to bring
+    out separability between the resistance classes which may be 
+    hidden in the dimensionality of the data.
+
+    :param date: (string) Data collection date YYYY_MMDD
+    :param takeSubset: (boolean) Transform and plot a random subset of
+                                 the trainng data?
+
+    :return: (None)
+    """
 
     mkl.set_num_threads(8)
 
