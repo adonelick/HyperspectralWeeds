@@ -54,6 +54,7 @@ def getDatafileNames(directory, keywords=[]):
 
                 containsKeyword = False
                 for kw in keywords:
+                    kw = kw.lower()
                     containsKeyword |= (kw in name)
 
                 if containsKeyword:

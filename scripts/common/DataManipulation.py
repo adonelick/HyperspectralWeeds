@@ -81,14 +81,14 @@ def separateTrainTest(dataPath, filenames, byLeaf=True):
                 train_X = data[0:trainIndex]
             else:
                 train_X = np.append(train_X, data[0:trainIndex], axis=0)
-            train_y = np.append(train_y, [label]*samples)
+            train_y = np.append(train_y, [label]*trainIndex)
 
 
             if test_X == None:
                 test_X = data[trainIndex:]
             else:
                 test_X = np.append(test_X, data[trainIndex:], axis=0)
-            test_y = np.append(test_y, [label]*samples)
+            test_y = np.append(test_y, [label]*(samples - trainIndex))
 
     return (train_X, train_y, test_X, test_y)
 

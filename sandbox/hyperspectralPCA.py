@@ -23,16 +23,20 @@ NUM_SAMPLES = 1000
 
 
 
-def main(date):
+def main(date, takeSubset=False):
 
     mkl.set_num_threads(8)
 
     # Load the training and testing data into memory
     trainX, trainY = FileIO.loadTrainingData(date)
 
-    indices = np.random.choice(range(0, len(trainY)), size=NUM_SAMPLES, replace=False)
-    X = trainX[indices,:]
-    y = trainY[indices]
+    if takeSubset:
+        indices = np.random.choice(range(0, len(trainY)), size=NUM_SAMPLES, replace=False)
+        X = trainX[indices,:]
+        y = trainY[indices]
+    else:
+        X = trainX
+        y = trainY
 
     X = np.nan_to_num(X)
 
@@ -107,6 +111,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run linear regression on the wavelengths')
     parser.add_argument('date', type=str, nargs=1,
                          help='Data collection date YYYY_MMDD')
+    parser.add_argument('-s', '--subset', default=False, action='store_true',
+                         help="Plot only a random subset of the total dataset")
 
     args = parser.parse_args()
-    main(args.date[0])
+    main(args.date[0], args.subset)

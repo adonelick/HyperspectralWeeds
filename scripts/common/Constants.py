@@ -19,16 +19,16 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import GradientBoostingClassifier
-from learning import NeuralNetworkClassifier
+# from learning import NeuralNetworkClassifier
 
 # Proportion of data to be used in the training set
 TRAIN_PROPORTION = 0.7
 
 # Store where the data is located
-DATA_DIRECTORIES = {"2015_1211" : "W:\Huntly Greenhouse 12-11-2015\Spectra CSV Files",
-                    "2015_1211_ML" : "W:\Huntly Greenhouse 12-11-2015\Machine Learning Data"}
+DATA_DIRECTORIES = {"2015_1211" : "W:\\Huntly Greenhouse 12-11-2015\\Spectra CSV Files",
+                    "2015_1211_ML" : "W:\\Huntly Greenhouse 12-11-2015\\Machine Learning Data"}
 
-MODEL_DIRECTORIES = {"2015_1211" : "W:\Huntly Greenhouse 12-11-2015\Machine Learning Models"}
+MODEL_DIRECTORIES = {"2015_1211" : "W:\\Huntly Greenhouse 12-11-2015\\Machine Learning Models"}
 
 
 TRAINING_DATA_PATH = "TrainingData.mem"
@@ -117,7 +117,6 @@ MODELS = {
     EXTREMELY_RANDOMIZED_TREES : ("Extra Random Trees", ExtraTreesClassifier),
     ADABOOST : ("Adaboost", AdaBoostClassifier),
     GRADIENT_BOOSTING : ("Gradient Boost", GradientBoostingClassifier),
-    NEURAL_NETWORK : ("Neural Network", NeuralNetworkClassifier)
 }
 
 
@@ -130,5 +129,4 @@ HYPERPARAMETERS = {
     EXTREMELY_RANDOMIZED_TREES : {},
     ADABOOST : {},
     GRADIENT_BOOSTING : {},
-    NEURAL_NETWORK : {}
 }

@@ -3,6 +3,26 @@
 # 23 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
+"""
+This script generates training and testing data for machine learning
+and analysis from leaf CSV files. This script must be run before any 
+machine learning model training can be done, and some analysis scripts
+can be run.
+
+Usage:
+
+    python generateTrainingData.py [date] [delete] [keywords] [byLeaf]
+
+    date: Data collection date YYYY_MMDD
+    delete: Determines whether or not to delete the existing
+            training/testing data files
+    keywords: Data filename keywords
+    byLeaf: Should we separate the train/test data
+            by leaf, or should we randomly separate
+            the data according to a set proportion?
+
+"""
+
 import argparse
 import os
 import sys
@@ -15,12 +35,17 @@ from common.Constants import *
 from common import DataManipulation
 
 
-def main(date, delete, keywords=[]):
+def main(date, delete, keywords=[], byLeaf=True):
     """
     Generates ML training and testing data from extracted CSV files
 
     :param date: (string) Data collection date YYYY_MMDD
+    :param delete: (boolean) Determines whether or not to delete the existing
+                             training/testing data files
     :param keywords: (list of strings) Data filename keywords
+    :param byLeaf: (boolean) Should we separate the train/test data
+                             by leaf, or should we randomly separate
+                             the data according to a set proportion?
 
     :return: (None)
     """
@@ -47,7 +72,7 @@ def main(date, delete, keywords=[]):
             os.remove(sampleCountsPath)
 
     # Consolidate the CSV files into training and testing data
-    (train_X, train_y, test_X, test_y) = DataManipulation.separateTrainTest(dataPath, dataFilenames, byLeaf=True)
+    (train_X, train_y, test_X, test_y) = DataManipulation.separateTrainTest(dataPath, dataFilenames, byLeaf=byLeaf)
 
     # Save the training and testing data in the proper spot
     FileIO.saveTrainingData(date, train_X, train_y)
@@ -62,9 +87,12 @@ if __name__ == '__main__':
                          help="Delete previous training/testing data")
     parser.add_argument('-k', '--keywords', default=[], type=str, nargs='*',
                          help="Filename keywords to include in the data")
+    parser.add_argument('-p', '--proportional', default=False, action='store_true',
+                         help="Divide the training/testing data proportionally by spectra")
 
     args = parser.parse_args()
-    main(args.date[0], args.delete, args.keywords)
+    byLeaf = not args.proportional
+    main(args.date[0], args.delete, args.keywords, byLeaf)
 
 
 
