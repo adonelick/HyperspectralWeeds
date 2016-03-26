@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 25 March 2016
+# 26 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
 """
@@ -95,6 +95,7 @@ def main(date, modelType):
 
         print "Training Accuracy:", trainingAccuracy
         print "Testing Accuracy:", testingAccuracy
+        print " "
 
         # Save the model to disk
         modelDirectory = MODEL_DIRECTORIES[date]
