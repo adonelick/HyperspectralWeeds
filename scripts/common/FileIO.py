@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 27 October 2015
+# 25 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
 """
