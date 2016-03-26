@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 25 March 2016
+# 26 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
 """
@@ -224,6 +224,9 @@ def saveModel(model, modelType, date):
 
     modelDirectory = MODEL_DIRECTORIES[date]
     modelPath = os.path.join(modelDirectory, modelType + ".model")
+
+    if not os.path.exists(modelDirectory):
+        os.mkdir(modelDirectory)
 
     with open(modelPath, 'wb') as fileHandle:
         cPickle.dump(model, fileHandle)

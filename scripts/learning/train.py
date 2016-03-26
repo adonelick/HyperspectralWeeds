@@ -98,9 +98,7 @@ def main(date, modelType):
         print " "
 
         # Save the model to disk
-        modelDirectory = MODEL_DIRECTORIES[date]
-        modelPath = os.path.join(modelDirectory, name + ".model")
-        # FileIO.saveModel(clf, modelPath)
+        FileIO.saveModel(clf, modelType, date)
 
 
 
