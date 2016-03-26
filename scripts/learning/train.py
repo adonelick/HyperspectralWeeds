@@ -5,10 +5,12 @@
 
 """
 This script is used to train machine learning models on the gathered
-training data. The trained model is then saved to 
+training data. The trained model is then saved to a directory, from
+which it can be read and applied to a datacube in Spectronon.
 
 Very basic tests are run on the model to check the accuracy
 of training. For more complete testing, please see the 'analysis' scripts.
+(These analysis scripts are not yet implemented).
 
 Usage:
     

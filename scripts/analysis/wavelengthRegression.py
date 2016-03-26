@@ -3,6 +3,18 @@
 # 25 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
+"""
+This script allows the user to get a sense of which wavelengths are
+contributing to the difference between classes by displaying the
+weight associated with each after training a linear classification
+on the training data.
+
+Usage:
+    
+    python wavelengthRegression.py [date]
+    
+    date: Date the training and testing data was collected (YYYY_MMDD)
+"""
 
 import argparse
 import os
