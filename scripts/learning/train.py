@@ -80,7 +80,7 @@ def main(date, modelType):
 
         # Train the desired ML model
         name, clfType = MODELS[modelType]
-        print "Training the ", name
+        print "Training the", name
 
         clf = clfType()
         clf.fit(trainX, trainY)

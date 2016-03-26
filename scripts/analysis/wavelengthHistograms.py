@@ -1,5 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
+# 26 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
 """
@@ -39,6 +40,8 @@ def main(date, wavelengths, plotLeaves, keywords=[]):
 
     :param date: (string) Data collection date YYYY_MMDD
     :param wavelengths: (list) Wavelengths to plot histograms
+    :param keywords: (list of strings) Strings which should be included in the 
+                                       filenames of files being plotted
 
     :return: (None)
     """
