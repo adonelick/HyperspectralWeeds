@@ -15,7 +15,7 @@ Usage:
 
     date: Data collection date YYYY_MMDD
     subset: Transform and plot a random subset of the trainng data?
-    
+
 """
 
 import argparse
@@ -75,13 +75,14 @@ def main(date, takeSubset=False):
     drX = X[y==drIndex, :]
     grX = X[y==grIndex, :]
 
+    # Transform the data using PCA
     pca = IncrementalPCA(n_components=3)
 
     pointsSUS = pca.fit_transform(susX)
     pointsGR= pca.fit_transform(grX)
     pointsDR = pca.fit_transform(drX)
 
-
+    # Plot the transformed data in 3D space
     traceSUS = go.Scatter3d(
         x=pointsSUS[:, 0],
         y=pointsSUS[:, 1],
