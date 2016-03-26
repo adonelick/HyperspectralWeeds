@@ -82,7 +82,7 @@ def loadTrainingData(date):
 
     # Open the file for appending
     trainingData = np.memmap(trainingDataPath, 
-                            mode='r+',
+                            mode='r',
                             dtype=np.float32,
                             shape=(trainingSamples, NUM_WAVELENGTHS+1))
     
@@ -113,7 +113,7 @@ def loadTestingData(date):
 
     # Open the file for appending
     testingData = np.memmap(testingDataPath, 
-                            mode='r+',
+                            mode='r',
                             dtype=np.float32,
                             shape=(testingSamples, NUM_WAVELENGTHS+1))
     
@@ -208,33 +208,41 @@ def saveTestingData(date, X, y):
     DataManipulation.updateSampleCounts(date, sampleCounts)
 
 
-def saveModel(model, path):
+def saveModel(model, modelType, date):
     """
     Saves a trained machine learning model to the specified
     path. This method must be called before the models can
     be used for application purposes.
 
     :param model: (sklearn model) trained machine learning model
-    :param path: (string) destination path for the model
+    :param modelType: (string) Type of model to be loaded (e.g svm, dt, rf, ...)
+    :param date: (string) Date in which the data was collected (YYYY_MMDD)
 
     :return: (None)
     """
 
-    with open(path, 'wb') as fileHandle:
+    modelDirectory = MODEL_DIRECTORIES[date]
+    modelPath = os.path.join(modelDirectory, modelType + ".model")
+
+    with open(modelPath, 'wb') as fileHandle:
         cPickle.dump(model, fileHandle)
         fileHandle.close()
 
 
-def loadModel(path):
+def loadModel(date, modelType):
     """
     Loads a trained machine learning model from disk for use.
 
-    :param path: (string) path for the model fileHandle
+    :param date: (string) Date in which the data was collected (YYYY_MMDD)
+    :param modelType: (string) Type of model to be loaded (e.g svm, dt, rf, ...)
 
     :return: (sklearn model) trained machine learning model
     """
 
-    with open(path, 'rb') as fileHandle:
+    modelDirectory = MODEL_DIRECTORIES[date]
+    modelPath = os.path.join(modelDirectory, modelType + ".model")
+
+    with open(modelPath, 'rb') as fileHandle:
         model = cPickle.load(fileHandle)
         fileHandle.close()
 
@@ -242,9 +250,7 @@ def loadModel(path):
 
 
 # Other possible methods:
-# - saving training/testing data
 # - deleting training/testing data
 # - saving PCA models
-# - loading metadata saved with the training/testing data
 
 

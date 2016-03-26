@@ -9,12 +9,27 @@ files, such as the names of the classes being classified,
 etc.
 """
 
+import sys
+sys.path.append("..")
+
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from learning import NeuralNetworkClassifier
+
 # Proportion of data to be used in the training set
 TRAIN_PROPORTION = 0.7
 
 # Store where the data is located
 DATA_DIRECTORIES = {"2015_1211" : "W:\Huntly Greenhouse 12-11-2015\Spectra CSV Files",
                     "2015_1211_ML" : "W:\Huntly Greenhouse 12-11-2015\Machine Learning Data"}
+
+MODEL_DIRECTORIES = {"2015_1211" : "W:\Huntly Greenhouse 12-11-2015\Machine Learning Models"}
+
 
 TRAINING_DATA_PATH = "TrainingData.mem"
 TESTING_DATA_PATH = "TestingData.mem"
@@ -82,3 +97,38 @@ WAVELENGTHS = [394.6, 396.6528, 398.7056, 400.7584, 402.8112, 404.864,
                850.3216, 852.3744, 854.4272, 856.48, 858.5328, 860.5856, 
                862.6384, 864.6912, 866.744, 868.7968, 870.8496, 872.9024, 
                874.9552, 877.008, 879.0608, 881.1136, 883.1664, 885.2192]
+
+# Constants which define the machine learning models' abbreviations
+SVM = "svm"
+K_NEAREST_NEIGHBORS = "knn"
+DECISION_TREE = "dt"
+RANDOM_FOREST = "rf"
+EXTREMELY_RANDOMIZED_TREES = "ert"
+ADABOOST = "ab"
+GRADIENT_BOOSTING = "gb"
+NEURAL_NETWORK = "nn"
+ALL = "all"
+
+MODELS = {
+    SVM : ("Support Vector Machine", SVC),
+    K_NEAREST_NEIGHBORS : ("K-Nearest Neighbors", KNeighborsClassifier),
+    DECISION_TREE : ("Decision Tree", DecisionTreeClassifier),
+    RANDOM_FOREST : ("Random Forest", RandomForestClassifier),
+    EXTREMELY_RANDOMIZED_TREES : ("Extra Random Trees", ExtraTreesClassifier),
+    ADABOOST : ("Adaboost", AdaBoostClassifier),
+    GRADIENT_BOOSTING : ("Gradient Boost", GradientBoostingClassifier),
+    NEURAL_NETWORK : ("Neural Network", NeuralNetworkClassifier)
+}
+
+
+# Hyperparameters used in training the machine learning models
+HYPERPARAMETERS = {
+    SVM : {},
+    K_NEAREST_NEIGHBORS : {},
+    DECISION_TREE : {},
+    RANDOM_FOREST : {},
+    EXTREMELY_RANDOMIZED_TREES : {},
+    ADABOOST : {},
+    GRADIENT_BOOSTING : {},
+    NEURAL_NETWORK : {}
+}

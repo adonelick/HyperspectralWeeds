@@ -1,76 +1,112 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 26 October 2015
+# 25 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
 
 import numpy as np
 import os
-import cPickle
+import sys
+sys.path.append("..")
 import mkl
+import argparse
 from sklearn.decomposition import IncrementalPCA
 
-import plotly.plotly as plt
+import plotly.plotly as py
 import plotly.graph_objs as go
 
+from scripts.common import FileIO
+from scripts.common import Constants
 
-PATH = "C:\\Users\\q45d465\\Documents\\Research\\Test1"
-NAME = "test2.npy"
+
+NUM_SAMPLES = 1000
 
 
-def main():
+
+def main(date):
 
     mkl.set_num_threads(8)
 
-    # Load the metadata for the datacube
-    metadataFilePath = os.path.join(PATH, NAME[:-4] + "_Metadata.pkl")
-    metadata = cPickle.load(open(metadataFilePath, 'rb'))
+    # Load the training and testing data into memory
+    trainX, trainY = FileIO.loadTrainingData(date)
 
-    lines = metadata["lines"]
-    samples = metadata["samples"]
-    bands = metadata["bands"]
-    
-    dataCube = np.load(os.path.join(PATH, NAME))
+    indices = np.random.choice(range(0, len(trainY)), size=NUM_SAMPLES, replace=False)
+    X = trainX[indices,:]
+    y = trainY[indices]
 
-    X = np.zeros((lines*samples, bands))
+    X = np.nan_to_num(X)
 
-    index = 0
-    for line in xrange(lines):
-        for sample in xrange(samples):
-            X[index,:] = dataCube[line, sample,:]
-            index += 1
+    # Break the data into resistance classes
+    susIndex = Constants.LABEL_TO_INDEX[Constants.SUSCEPTIBLE]
+    drIndex = Constants.LABEL_TO_INDEX[Constants.DR_RESISTANT]
+    grIndex = Constants.LABEL_TO_INDEX[Constants.GR_RESISTANT]
 
-    del dataCube
+    susX = X[y==susIndex, :]
+    drX = X[y==drIndex, :]
+    grX = X[y==grIndex, :]
+
     pca = IncrementalPCA(n_components=3)
 
-    transformedX = pca.fit_transform(X)
+    pointsSUS = pca.fit_transform(susX)
+    pointsGR= pca.fit_transform(grX)
+    pointsDR = pca.fit_transform(drX)
 
-    indices = np.random.choice(lines*samples, size=2000, replace=False)
-    selectedSamples = transformedX[indices]
 
-    x = selectedSamples[:,0]
-    y = selectedSamples[:,1]
-    z = selectedSamples[:,2]
-
-    trace = go.Scatter3d(
-    x=x, y=y, z=z,
-    mode='markers',
-    marker=dict(
-        size=3,
-        line=dict(
-            color='rgba(217, 217, 217, 0.14)',
-            width=0.25
-                 ),
-                 opacity=1
+    traceSUS = go.Scatter3d(
+        x=pointsSUS[:, 0],
+        y=pointsSUS[:, 1],
+        z=pointsSUS[:, 2],
+        mode='markers',
+        marker=dict(
+            size=5,
+            line=dict(
+                color='rgba(255, 0, 0, 0)',
+                width=0.1
+            ),
+            opacity=0
         )
     )
 
+    traceDR = go.Scatter3d(
+        x=pointsDR[:, 0],
+        y=pointsDR[:, 1],
+        z=pointsDR[:, 2],
+        mode='markers',
+        marker=dict(
+            size=5,
+            line=dict(
+                color='rgba(0, 255, 0, 0)',
+                width=0.1
+            ),
+            opacity=0
+        )
+    )
 
-    data = [trace]
+    traceGR = go.Scatter3d(
+        x=pointsGR[:, 0],
+        y=pointsGR[:, 1],
+        z=pointsGR[:, 2],
+        mode='markers',
+        marker=dict(
+            size=5,
+            line=dict(
+                color='rgba(0, 0, 255, 0)',
+                width=0.1
+            ),
+            opacity=0
+        )
+    )
+
+    data = [traceSUS, traceDR, traceGR]
     fig = go.Figure(data=data)
-    plot_url = plt.plot(fig, filename='Hyperspectral PCA Test')
+    py.iplot(fig, filename='3D PCA Wavelength Plot')
 
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Run linear regression on the wavelengths')
+    parser.add_argument('date', type=str, nargs=1,
+                         help='Data collection date YYYY_MMDD')
+
+    args = parser.parse_args()
+    main(args.date[0])

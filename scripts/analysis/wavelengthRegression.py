@@ -16,7 +16,7 @@ from common import FileIO
 from common.Constants import *
 
 
-def main(date, keywords=[]):
+def main(date):
     """
     Runs linear regression (classification) between the herbicide 
     resistance classes based on all wavelengths. The weights
@@ -25,21 +25,29 @@ def main(date, keywords=[]):
     wavelength.
 
     :param date: (string) Data collection date YYYY_MMDD
-    :param keywords: (list of strings) Data filename keywords
 
     :return: (None)
     """
     
-    # Get the data files we will be looking at
-    dataPath = DATA_DIRECTORIES[date]
-    dataFilenames = FileIO.getDatafileNames(dataPath, keywords)
+    # Load the training data from disk   
+    X, y = FileIO.loadTrainingData(date)
+    X = np.nan_to_num(X)
 
     # Train the classifier on the loaded data
     clf = SGDClassifier()
     clf.fit(X, y)
 
     # Plot the feature weights to visualize feature contributions
-    featureWeights = clf.coef_
+    featureWeights = np.fabs(clf.coef_)
+
+    plt.plot(WAVELENGTHS, featureWeights[0])
+    plt.show()
+
+    plt.plot(WAVELENGTHS, featureWeights[1])
+    plt.show()
+
+    plt.plot(WAVELENGTHS, featureWeights[2])
+    plt.show()
 
 
 
@@ -48,8 +56,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run linear regression on the wavelengths')
     parser.add_argument('date', type=str, nargs=1,
                          help='Data collection date YYYY_MMDD')
-    parser.add_argument('-k', '--keywords', default=[], type=str, nargs='*',
-                         help="Filename keywords to include")
 
     args = parser.parse_args()
-    main(args.date[0], args.keywords)
+    main(args.date[0])

@@ -15,16 +15,21 @@ Usage:
     To train a machine learning model, call this script with the following
     command on the command line:
 
-    python train.py [modelType]
+    python train.py [date] [modelType]
 
-    The 'modelType' parameter specifies which model to train. The choices for
-    the different models are defined at the top of this file.
+    date: Date the training and testing data was collected (YYYY_MMDD)
+    modelType: parameter specifies which model to train. The choices for
+               the different models are defined at the top of this file.
 """
 
+import os
 import sys
 sys.path.append("..")
 import argparse
+import numpy as np
+
 from common import FileIO
+from common.Constants import *
 
 # Import the required machine learning models
 from sklearn.svm import SVC
@@ -36,56 +41,23 @@ from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 import NeuralNetworkClassifier
 
-
-# Constants which define the machine learning models' abbreviations
-SVM = "svm"
-K_NEAREST_NEIGHBORS = "knn"
-DECISION_TREE = "dt"
-RANDOM_FOREST = "rf"
-EXTREMELY_RANDOMIZED_TREES = "ert"
-ADABOOST = "ab"
-GRADIENT_BOOSTING = "gb"
-NEURAL_NETWORK = "nn"
-ALL = "all"
-
-MODELS = {
-    SVM : ("Support Vector Machine", SVC),
-    K_NEAREST_NEIGHBORS : ("K-Nearest Neighbors", KNeighborsClassifier),
-    DECISION_TREE : ("Decision Tree", DecisionTreeClassifier),
-    RANDOM_FOREST : ("Random Forest", RandomForestClassifier),
-    EXTREMELY_RANDOMIZED_TREES : ("Extra Random Trees", ExtraTreesClassifier),
-    ADABOOST : ("Adaboost", AdaBoostClassifier),
-    GRADIENT_BOOSTING : ("Gradient Boost", GradientBoostingClassifier),
-    NEURAL_NETWORK : ("Neural Network", NeuralNetworkClassifier)
-}
+from sklearn.metrics import accuracy_score
 
 
-# Hyperparameters used in training the machine learning models
-HYPERPARAMETERS = {
-    SVM : {},
-    K_NEAREST_NEIGHBORS : {},
-    DECISION_TREE : {},
-    RANDOM_FOREST : {},
-    EXTREMELY_RANDOMIZED_TREES : {},
-    ADABOOST : {},
-    GRADIENT_BOOSTING : {},
-    NEURAL_NETWORK : {}
-}
-
-
-def main(modelType):
+def main(date, modelType):
     """
     Runs the training script. Trains the specified model type, saves the 
     model to a prefined location (specified in the Constants file), and 
     runs basic accuracy tests on the trained model.
 
+    :param date: Date the training and testing data was collected (YYYY_MMDD)
     :param modelType: (string) type of machine learning model to train
 
     :return: (None)
     """
     
     # Make sure that the model is a valid choice
-    if (not modelType in MODELS.keys()) and (modelType != ALL):
+    if (not (modelType in MODELS.keys())) and (modelType != ALL):
         print "Invalid model type:", modelType
         return
 
@@ -96,27 +68,46 @@ def main(modelType):
         modelsToTrain = [modelType]
 
     # Load the training and testing data into memory
-    trainX, trainY = FileIO.loadTrainingData()
-    testX, testY = FileIO.loadTestingData()
+    trainX, trainY = FileIO.loadTrainingData(date)
+    testX, testY = FileIO.loadTestingData(date)
+
+    trainX = np.nan_to_num(trainX)
+    testX = np.nan_to_num(testX)
 
     for modelType in modelsToTrain:
 
         # Train the desired ML model
-        name, clf = MODELS[modelType]
+        name, clfType = MODELS[modelType]
         print "Training the ", name
+
+        clf = clfType()
         clf.fit(trainX, trainY)
 
         # Perform some very basic accuracy testing
 
-        # Save the model to disk
+        trainResult = clf.predict(trainX)
+        testResult = clf.predict(testX)
 
+        trainingAccuracy = accuracy_score(trainY, trainResult)
+        testingAccuracy = accuracy_score(testY, testResult)
+
+        print "Training Accuracy:", trainingAccuracy
+        print "Testing Accuracy:", testingAccuracy
+
+        # Save the model to disk
+        modelDirectory = MODEL_DIRECTORIES[date]
+        modelPath = os.path.join(modelDirectory, name + ".model")
+        # FileIO.saveModel(clf, modelPath)
 
 
 
 if __name__ == '__main__':
     # Parse the command line arguments
-    parser = argparse.ArgumentParser(description='Train machine learning models.')
-    parser.add_argument('modelType', metavar='modelType', type=str, 
-                                     help='ML model identifier')
+    parser = argparse.ArgumentParser(description='Train machine learning models')
+    parser.add_argument('date', type=str, nargs=1,
+                         help='Data collection date YYYY_MMDD')
+    parser.add_argument('modelType', type=str, nargs=1,
+                         help='Type of machine learning model to train')
     args = parser.parse_args()
-    main(args.modelType)
+
+    main(args.date[0], args.modelType[0])
