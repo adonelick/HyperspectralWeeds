@@ -19,7 +19,7 @@ Usage:
 
     python train.py [date] [modelType]
 
-    date: Date the training and testing data was collected (YYYY_MMDD)
+    date: Date the training and testing data were collected (YYYY_MMDD)
     modelType: parameter specifies which model to train. The choices for
                the different models are defined at the top of this file.
 """

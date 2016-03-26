@@ -12,8 +12,8 @@ on the training data.
 Usage:
     
     python wavelengthRegression.py [date]
-    
-    date: Date the training and testing data was collected (YYYY_MMDD)
+
+    date: Date the training and testing data were collected (YYYY_MMDD)
 """
 
 import argparse
