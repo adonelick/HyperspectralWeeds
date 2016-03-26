@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 8 February 2016
+# 25 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
 
@@ -8,13 +8,24 @@
 # scipts for the Spectronon software. If any additional constants are needed
 # in new scripts, they should be put in here.
 
+# Dates that data were collected
+COLLECTION_DATES = ["2015_1211"]
+
+# Store where the data is located
+DATA_DIRECTORIES = {"2015_1211" : "W:\Huntly Greenhouse 12-11-2015\Spectra CSV Files",
+                    "2015_1211_ML" : "W:\Huntly Greenhouse 12-11-2015\Machine Learning Data"}
+
+MODEL_DIRECTORIES = {"2015_1211" : "W:\Huntly Greenhouse 12-11-2015\Machine Learning Models"}
+
 
 # Metadata to be saved with any exported datacubes
 # Note: the 'samples' and 'lines' metadata are automatically
 # included, regardless of what is stated here.
+# (This information is used by the save training data plugin, which is not in use at the moment)
 METADATA_TAGS = ["bands", "wavelength", "reflectance scale factor"]
 
 # Information for training data collection
+# (This information is used by the save training data plugin, which is not in use at the moment)
 TRAIN_PROPORTION = 0.8
 TRAINING_DATA_PATH = "C:\Users\q45d465\Documents\Research\TrainingData.mem"
 TESTING_DATA_PATH = "C:\Users\q45d465\Documents\Research\TestingData.mem"
@@ -68,5 +79,4 @@ MIN_SPECTRALON_WAVELENGTH = 300
 MAX_SPECTRALON_WAVELENGTH = 1500
 SPECTRALON_WAVELENGTH_STEP = 50
 
-NDVI_THRESHOLD = 0.3
-
+NDVI_THRESHOLD = 0.7

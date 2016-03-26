@@ -5,9 +5,9 @@ import skimage
 
 class MyPlugin(CubePlugin):
     """
-    An example plugin
+    Extracts useful information about a datacube and displays it
     """
-    label = "My Plugin"
+    label = "Information Plugin"
     userLevel = 1
 
     def setup(self):
@@ -29,3 +29,5 @@ class MyPlugin(CubePlugin):
         self.wb.postMessage("Samples: " + str(samples))
         self.wb.postMessage("Lines: " + str(lines))
         self.wb.postMessage(skimage.__version__)
+        self.wb.postMessage(str(vars(self.datacube)))
+        self.wb.postMessage(str(dir(self.datacube)))
