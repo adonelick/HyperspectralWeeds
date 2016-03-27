@@ -17,6 +17,9 @@ from matplotlib import pyplot as plt
 from matplotlib import cm
 import matplotlib.patches as mpatches
 
+PLANT_MATERIAL = 100
+BACKGROUND = -1
+
 class ClassifyPlugin(SelectPlugin):
     """
     Classifies the spectra in a datacube using a trained classification
@@ -62,30 +65,45 @@ class ClassifyPlugin(SelectPlugin):
         dataCube = self.datacube.getArray(asBIP=True)
         datacubeName = self.datacube.getName()
         dataCubeFilename = self.datacube.getFilename()
+        pointList = self.pointlist
         lines, samples, bands = dataCube.shape
 
-        # Classify the background using an NDVI index. Background is denoted
-        # with a value of -1
+        # Extract the region of interest from the selected points
+        pointLines = map(lambda x: x[1], pointList)
+        pointSamples = map(lambda x: x[0], pointList)
+
+        minLine = min(pointLines)
+        maxLine = max(pointLines)
+        minSample = min(pointSamples)
+        maxSample = max(pointSamples)
+
+        # Classify the background using an NDVI index. Note any
+        # locations of plant material for classification
         ndvi = NDVI(self.datacube)
-        background = np.zeros(ndvi.shape, np.int8)
+        background = PLANT_MATERIAL * np.ones(ndvi.shape, np.int8)
         plantLocations = ndvi >= self.ndviThreshold.value
-        background = np.zeros(ndvi.shape, np.int8)
-        background[~plantLocations] = -1
+        background[~plantLocations] = BACKGROUND
 
         # Classify the remaining plant material using the classifier
         modelType = MODEL_NAME_TO_TYPE[self.classifier.value]
-        clf = loadModel(self.date.value, modelType)
+        clf = loadModel(self.wb, self.date.value, modelType)
+        if clf == None:
+            return
 
         classifiedPlantMaterial = np.zeros((lines, samples))
-        for line in xrange(lines):
-            for sample in xrange(samples):
+        for line in xrange(minLine, maxLine + 1):
+            for sample in xrange(minSample, maxSample + 1):
 
-                if background[line, sample] == 0:
+                if (background[line, sample] == PLANT_MATERIAL):
 
                     spectrum = dataCube[line, sample, :]
                     label = clf.predict(np.array([spectrum]))
                     classifiedPlantMaterial[line, sample] = label
 
+        # Convert any non-classified plant material to background
+        # Non-classified plant material would be that which fell outside
+        # of the selected region of interest.
+        background[background==PLANT_MATERIAL] = BACKGROUND 
         totalClassification = background + classifiedPlantMaterial
         totalClassification += 1
 
@@ -110,10 +128,11 @@ class ClassifyPlugin(SelectPlugin):
         plt.show()
 
 
-def loadModel(date, modelType):
+def loadModel(wb, date, modelType):
     """
     Loads a trained machine learning model from disk for use.
 
+    :param wb: (Spectronon workbench) Reference to useful stuff in Spectronon
     :param date: (string) Date in which the data was collected (YYYY_MMDD)
     :param modelType: (string) Type of model to be loaded (e.g svm, dt, rf, ...)
 
@@ -123,32 +142,17 @@ def loadModel(date, modelType):
     modelDirectory = MODEL_DIRECTORIES[date]
     modelPath = os.path.join(modelDirectory, modelType + ".model")
 
-    with open(modelPath, 'rb') as fileHandle:
-        model = cPickle.load(fileHandle)
-        fileHandle.close()
+    try:
+        with open(modelPath, 'rb') as fileHandle:
+            model = cPickle.load(fileHandle)
+            fileHandle.close()
 
-    return model
+        return model
 
+    except IOError:
 
-def createNewDatacube(workbench, band, wavelength, rotationString):
-    """
-    Creates a Spectronon DataCube object from the supplied data matrix. 
-
-    :param workbench: (Spectronon workbench) Reference to useful stuff in Spectronon
-    :param band: (matrix of floats) Data which should be put into a cube
-    :param wavelength: (float) Wavelengths of the datacube
-    :param rotationString: (string) Rotation format for the datacube
-
-    :return: (Spectronon DataCube) New datacube containing provided data
-    """
-
-    newcube = util.makeEmptyCube(mode="memory",
-                                 typechar='f',
-                                 rotationString=rotationString)
-
-    newcube.appendBandWithWavelength(band, wave=wavelength)
-
-    return newcube
+        wb.postMessage("Unable to load model of type: " + modelType)
+        return None
 
 
 def NDVI(datacube):
