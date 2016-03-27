@@ -31,3 +31,4 @@ class MyPlugin(CubePlugin):
         self.wb.postMessage(skimage.__version__)
         self.wb.postMessage(str(vars(self.datacube)))
         self.wb.postMessage(str(dir(self.datacube)))
+        self.wb.postMessage(str(dir(self.wb)))

@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 25 March 2016
+# 26 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
 
@@ -12,9 +12,9 @@ import os
 import numpy as np
 
 
-class SimpleSpectraExport(SelectPlugin):
+class BackgroundSpectraExport(SelectPlugin):
     """Gather training data for our machine learning models""" 
-    label = "Simple Spectra Export"
+    label = "Background Spectra Export"
     userLevel = 1
 
     def setup(self):
@@ -51,10 +51,8 @@ class SimpleSpectraExport(SelectPlugin):
 
         # Determine the base name for the output CSV file,
         # which folder the file will be saved in
-        root, name = os.path.split(dataCubeFilename)
-        name = name[0:-4]
         lighting = self.lighting.value
-        startingName = name + '_' + lighting
+        startingName = "Background_" + lighting
 
         # Determine the number of files of the same type/subject
         # as the one we are currently working on

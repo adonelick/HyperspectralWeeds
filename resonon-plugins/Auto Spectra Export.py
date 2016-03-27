@@ -27,8 +27,6 @@ import os
 import cv2
 from matplotlib import pyplot as plt
 
-GRID = "Grid"
-WATERSHED = "Watershed"
 OPENCV_VERSION = "3.1.0"
 
 class AutoSpectraExport(SelectPlugin):

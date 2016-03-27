@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 25 March 2016
+# 26 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
 
@@ -12,10 +12,10 @@
 COLLECTION_DATES = ["2015_1211"]
 
 # Store where the data is located
-DATA_DIRECTORIES = {"2015_1211" : "W:\Huntly Greenhouse 12-11-2015\Spectra CSV Files",
-                    "2015_1211_ML" : "W:\Huntly Greenhouse 12-11-2015\Machine Learning Data"}
+DATA_DIRECTORIES = {"2015_1211" : "W:\\Huntly Greenhouse 12-11-2015\\Spectra CSV Files",
+                    "2015_1211_ML" : "W:\\Huntly Greenhouse 12-11-2015\\Machine Learning Data"}
 
-MODEL_DIRECTORIES = {"2015_1211" : "W:\Huntly Greenhouse 12-11-2015\Machine Learning Models"}
+MODEL_DIRECTORIES = {"2015_1211" : "W:\\Huntly Greenhouse 12-11-2015\\Machine Learning Models"}
 
 
 # Metadata to be saved with any exported datacubes
@@ -33,9 +33,29 @@ SAMPLE_COUNTS_PATH = "C:\Users\q45d465\Documents\Research\SampleCounts.pkl"
 
 TEMP_DIRECTORY = "W:\\temp"
 
-CLASSES = ["Kochia_SUS", "Kochia_GR", "Kochia_DR", "Wheat", "Barley", "Bean"]
+SUSCEPTIBLE = 'sus'
+GR_RESISTANT = 'gr'
+DR_RESISTANT = 'dr'
+
+CLASSES = [SUSCEPTIBLE, GR_RESISTANT, DR_RESISTANT]
+
+# Label-to-index and index-to-label dictionaries for the resistance classes
+LABEL_TO_INDEX = {SUSCEPTIBLE : 0,
+                  GR_RESISTANT  : 1,
+                  DR_RESISTANT  : 2 }
+
+RESISTANCE_STRINGS = {SUSCEPTIBLE : "Susceptible",
+                      GR_RESISTANT  : "Glyphosate Resistant",
+                      DR_RESISTANT  : "Dicamba Resistant" }
+
+INDEX_TO_LABEL = {0 : SUSCEPTIBLE,
+                  1 : GR_RESISTANT,
+                  2 : DR_RESISTANT}
+
 LIGHTING = ["Diffuse", "Direct", "Artificial"]
-SEGMENTATION = ["Grid", "Watershed"]
+GRID = "Grid"
+WATERSHED = "Watershed"
+SEGMENTATION = [GRID, WATERSHED]
 
 # Information for saving or retrieving the trained ML models
 MODEL_PATH = None
@@ -80,3 +100,34 @@ MAX_SPECTRALON_WAVELENGTH = 1500
 SPECTRALON_WAVELENGTH_STEP = 50
 
 NDVI_THRESHOLD = 0.7
+
+# Constants which define the machine learning models' abbreviations
+SVM = "svm"
+K_NEAREST_NEIGHBORS = "knn"
+DECISION_TREE = "dt"
+RANDOM_FOREST = "rf"
+EXTREMELY_RANDOMIZED_TREES = "ert"
+ADABOOST = "ab"
+GRADIENT_BOOSTING = "gb"
+NEURAL_NETWORK = "nn"
+ALL = "all"
+
+MODEL_TYPE_TO_NAME = {
+    SVM : "Support Vector Machine",
+    K_NEAREST_NEIGHBORS : "K-Nearest Neighbors", 
+    DECISION_TREE : "Decision Tree", 
+    RANDOM_FOREST : "Random Forest", 
+    EXTREMELY_RANDOMIZED_TREES : "Extra Random Trees", 
+    ADABOOST : "Adaboost",
+    GRADIENT_BOOSTING : "Gradient Boosting"
+}
+
+MODEL_NAME_TO_TYPE = {
+    "Support Vector Machine" : SVM,
+    "K-Nearest Neighbors" : K_NEAREST_NEIGHBORS,
+    "Decision Tree" : DECISION_TREE,
+    "Random Forest" : RANDOM_FOREST,
+    "Extra Random Trees" : EXTREMELY_RANDOMIZED_TREES,
+    "Adaboost" : ADABOOST,
+    "Gradient Boost" : GRADIENT_BOOSTING
+}
