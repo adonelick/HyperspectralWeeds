@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 26 March 2016
+# 27 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
 """
@@ -9,12 +9,13 @@ the user to plot histograms of specified wavelengths in collected data.
 
 Usage:
     
-    python wavelengthHistograms.py [date] [-w wavelengths] [-k keywords] [-l]
+    python wavelengthHistograms.py [date] [-w wavelengths] [-k keywords] [-l] [-b binning]
 
     date: Data collection data (ex: 2015_1211)
     wavelengths: Wavelengths in nm you wish to plot (ex: 600)
     keywords: Strings in the filenames to be included in plots
     leaves: Plot only a single point per leaf vs. all spectra in a leaf
+    binning: Wavelength binning parameter (in nm)
 
 """
 
@@ -30,24 +31,27 @@ sys.path.append("..")
 from common import FileIO
 from common.Constants import *
 from common.WavelengthCalculations import wavelengthToIndex
+from common.WavelengthCalculations import wavelengthRegionToIndices
 
 BINS = 40
 
 
-def main(date, wavelengths, plotLeaves, keywords=[]):
+def main(date, wavelengths, plotLeaves, binning, keywords=[]):
     """
     Plot the histogram of a specified list of wavelengths.
 
     :param date: (string) Data collection date YYYY_MMDD
     :param wavelengths: (list) Wavelengths to plot histograms
-    :param keywords: (list of strings) Strings which should be included in the 
+    :param plotLeaves: (boolean) Plot only a single point per 
+                                 leaf vs. all spectra in a leaf
+    :param binning: (float) Wavelength binning width (in nm)
+    :param keywords: (list of strings) Strings which should be included in the
                                        filenames of files being plotted
 
     :return: (None)
     """
 
     numHistograms = len(wavelengths)
-    wavelengthIndices = map(wavelengthToIndex, wavelengths)
 
     # Get the data files we will be looking at
     dataPath = DATA_DIRECTORIES[date]
@@ -72,7 +76,20 @@ def main(date, wavelengths, plotLeaves, keywords=[]):
 
         # Extract the relevant data from the spectra in the data file
         try:
-            histogramData = data[:, wavelengthIndices]
+            if not binning:
+                wavelengthIndices = map(wavelengthToIndex, wavelengths)
+                histogramData = data[:, wavelengthIndices]
+            else:
+                
+                indexRegions = map(lambda x: wavelengthRegionToIndices(x, binning), wavelengths)
+                rows, columns = data.shape
+                histogramData = np.zeros((rows, numHistograms))
+
+                for i in xrange(numHistograms):
+
+                    histogramData[:, i] = map(lambda j: np.mean(data[j,indexRegions[i]]), xrange(rows))
+
+
         except Exception, e:
             print "Error with file:", name
             continue
@@ -115,7 +132,7 @@ def main(date, wavelengths, plotLeaves, keywords=[]):
 
         if np.NaN in x:
             print "Skipping wavelength", wavelength
-            break
+            continue
 
         meanSUS = np.mean(x)
         meanDR = np.mean(y)
@@ -154,8 +171,6 @@ def main(date, wavelengths, plotLeaves, keywords=[]):
         plt.show()
 
 
-
-
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Plot wavelength histograms')
@@ -163,10 +178,12 @@ if __name__ == '__main__':
                          help='Data collection date YYYY_MMDD')
     parser.add_argument('-w', '--wavelengths', default=WAVELENGTHS, type=float, nargs='*',
                          help="Wavelengths to plot")
+    parser.add_argument('-b', '--binning', default=0, type=float, nargs='?',
+                         help="Binning width (in nm)")
     parser.add_argument('-l', '--leaves', default=False, action='store_true',
                          help="One leaf -> one sample")
     parser.add_argument('-k', '--keywords', default=[], type=str, nargs='*',
                          help="Filename keywords to include")
     args = parser.parse_args()
 
-    main(args.date[0], args.wavelengths, args.leaves, args.keywords)
+    main(args.date[0], args.wavelengths, args.leaves, args.binning, args.keywords)

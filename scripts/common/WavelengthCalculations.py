@@ -2,9 +2,14 @@
 # andrew.donelick@msu.montana.edu
 # Montana State University - Optical Remote Sensing Lab
 
+"""
+This file contains useful helper functions for calculations 
+involving wavelengths, wavelength conversions, etc.
+"""
 
 from Constants import *
 import math
+
 
 def wavelengthToIndex(wavelength):
     """
@@ -32,3 +37,24 @@ def indexToWavelength(index):
     """
 
     return WAVELENGTHS[index]
+
+
+def wavelengthRegionToIndices(wavelength, width):
+    """
+    Converts a selected region, centered on wavelength and with a
+    specified width, to a list of wavelenght indices.
+
+    :param wavelength: (float) wavelength in nanometers
+    :param width: (float) width of selected region in nanometers
+
+    :return: (list of ints) 
+    """
+
+    halfWidth = width / 2.0
+    maxWavelength = wavelength + halfWidth
+    minWavelength = wavelength - halfWidth
+
+    maxIndex = wavelengthToIndex(maxWavelength)
+    minIndex = wavelengthToIndex(minWavelength)
+
+    return range(minIndex, maxIndex + 1)
