@@ -246,11 +246,17 @@ def loadModel(date, modelType):
     modelDirectory = MODEL_DIRECTORIES[date]
     modelPath = os.path.join(modelDirectory, modelType + ".model")
 
-    with open(modelPath, 'rb') as fileHandle:
-        model = cPickle.load(fileHandle)
-        fileHandle.close()
+    try:
+        with open(modelPath, 'rb') as fileHandle:
+            model = cPickle.load(fileHandle)
+            fileHandle.close()
 
-    return model
+        return model
+
+    except IOError:
+        
+        print "Unable to load model of type:", modelType
+        return None
 
 
 # Other possible methods:
