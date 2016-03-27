@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 26 March 2016
+# 27 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
 from spectronon.workbench.plugin import SelectPlugin
@@ -97,20 +97,14 @@ class ClassifyPlugin(SelectPlugin):
                 if (background[line, sample] == PLANT_MATERIAL):
 
                     spectrum = dataCube[line, sample, :]
+                    spectrum = np.nan_to_num(spectrum)
                     label = clf.predict(np.array([spectrum]))
-                    classifiedPlantMaterial[line, sample] = label
-
-        # Convert any non-classified plant material to background
-        # Non-classified plant material would be that which fell outside
-        # of the selected region of interest.
-        background[background==PLANT_MATERIAL] = BACKGROUND 
-        totalClassification = background + classifiedPlantMaterial
-        totalClassification += 1
+                    classifiedPlantMaterial[line, sample] = label + 1
 
         # Plot the classification map
         cmap = cm.get_cmap('seismic')
         maxIndex = max(LABEL_TO_INDEX.values()) + 1
-        totalClassification[0, 0] = maxIndex
+        classifiedPlantMaterial[0, 0] = maxIndex
 
         rgbaBG = cmap(0.0)
         rgbaSUS = cmap(1.0*(LABEL_TO_INDEX[SUSCEPTIBLE]+1) / maxIndex)
@@ -122,7 +116,7 @@ class ClassifyPlugin(SelectPlugin):
         drPatch = mpatches.Patch(color=rgbaDR, label=RESISTANCE_STRINGS[DR_RESISTANT])
         grPatch = mpatches.Patch(color=rgbaGR, label=RESISTANCE_STRINGS[GR_RESISTANT])
 
-        plt.imshow(totalClassification, cmap=cmap)
+        plt.imshow(classifiedPlantMaterial, cmap=cmap)
         plt.legend(handles=[bgPatch, susPatch, grPatch, drPatch])
         plt.title("Classification Map")
         plt.show()

@@ -72,15 +72,30 @@ class AutoSpectraExport(SelectPlugin):
         # Retrieve useful information about the datacube and the user selection
         dataCube = self.datacube.getArray(asBIP=True)
         datacubeName = self.datacube.getName()
+        pointList = self.pointlist
+        lines, samples, bands = dataCube.shape
         destination = self.wb.requestDirectory(message="Please Give a Destination Folder for the Data")
         if destination == None:
             return
+
+        # Extract the region of interest from the selected points
+        pointLines = map(lambda x: x[1], pointList)
+        pointSamples = map(lambda x: x[0], pointList)
+
+        minLine = min(pointLines)
+        maxLine = max(pointLines)
+        minSample = min(pointSamples)
+        maxSample = max(pointSamples)
+
+        selectionMask = np.zeros((lines, samples), np.uint8)
+        selectionMask[minLine:maxLine+1, minSample:maxSample+1] = 255
 
         # Construct an image which shows the location of the plant material in the image
         ndvi = NDVI(self.datacube)
         plantMaterial = np.zeros(ndvi.shape, np.uint8)
         plantLocations = ndvi >= self.ndviThreshold.value
         plantMaterial[plantLocations] = 255
+        plantMaterial = cv2.bitwise_and(plantMaterial, selectionMask)
 
         extractionMethod = self.extractionMethod.value
         lighting = self.lighting.value

@@ -70,8 +70,6 @@ def main(date, wavelengths, keywords=[], allSpectra=False):
 
         plant = tokens[0]
         resistance = tokens[1]
-        imageType = tokens[2]
-        index = int(tokens[4])
 
         filePath = os.path.join(dataPath, name)
         data = FileIO.loadCSV(filePath)
