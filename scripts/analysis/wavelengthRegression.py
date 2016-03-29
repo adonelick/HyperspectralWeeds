@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 25 March 2016
+# 29 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
 """
@@ -52,15 +52,12 @@ def main(date):
     # Plot the feature weights to visualize feature contributions
     featureWeights = np.fabs(clf.coef_)
 
-    plt.plot(WAVELENGTHS, featureWeights[0])
-    plt.show()
-
-    plt.plot(WAVELENGTHS, featureWeights[1])
-    plt.show()
-
-    plt.plot(WAVELENGTHS, featureWeights[2])
-    plt.show()
-
+    for i in xrange(3):
+        plt.plot(WAVELENGTHS, featureWeights[i])
+        plt.title("Linear Classifier Weights for " + RESISTANCE_STRINGS[INDEX_TO_LABEL[i]] + " vs Others")
+        plt.xlabel("Wavelength (nm)")
+        plt.ylabel("Absolute Weight")
+        plt.show()
 
 
 if __name__ == '__main__':

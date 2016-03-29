@@ -81,9 +81,10 @@ def main(date, modelType):
 
         # Train the desired ML model
         name, clfType = MODELS[modelType]
+        hyperparameters = HYPERPARAMETERS[modelType]
         print "Training the", name
 
-        clf = clfType()
+        clf = clfType(**hyperparameters)
         clf.fit(trainX, trainY)
 
         # Perform some very basic accuracy testing

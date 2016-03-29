@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 25 March 2016
+# 29 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
 """
@@ -122,11 +122,11 @@ MODELS = {
 
 # Hyperparameters used in training the machine learning models
 HYPERPARAMETERS = {
-    SVM : {},
+    SVM : {"kernel" : "rbf"},
     K_NEAREST_NEIGHBORS : {},
     DECISION_TREE : {},
-    RANDOM_FOREST : {},
-    EXTREMELY_RANDOMIZED_TREES : {},
+    RANDOM_FOREST : {"n_jobs" : 7, "n_estimators" : 50},
+    EXTREMELY_RANDOMIZED_TREES : {"n_jobs" : 7, "n_estimators" : 50},
     ADABOOST : {},
     GRADIENT_BOOSTING : {},
 }
