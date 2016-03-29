@@ -44,6 +44,7 @@ from sklearn.ensemble import GradientBoostingClassifier
 import NeuralNetworkClassifier
 
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
 
 
 def main(date, modelType):
@@ -92,9 +93,12 @@ def main(date, modelType):
 
         trainingAccuracy = accuracy_score(trainY, trainResult)
         testingAccuracy = accuracy_score(testY, testResult)
+        confusionMatrix = confusion_matrix(testY, testResult)
 
         print "Training Accuracy:", trainingAccuracy
         print "Testing Accuracy:", testingAccuracy
+        print "Confusion Matrix:"
+        print confusionMatrix
         print " "
 
         # Save the model to disk
