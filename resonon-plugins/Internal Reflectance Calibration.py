@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 8 February 2016
+# 28 March 2016
 # Montana State University - Optical Remote Sensing Lab
 
 """
@@ -72,7 +72,7 @@ class InternalReflectanceCalibration(SelectPlugin):
                 reflectanceCube[i, j, :] = correction * dataCube[i, j, :]
 
         # If desired, remove the spectral bands from the calibrated datacube
-        if self.removeBands:
+        if self.removeBands.value:
             for removal in BANDS_TO_REMOVE:
                 lowerLimit = removal[0]
                 upperLimit = removal[1]

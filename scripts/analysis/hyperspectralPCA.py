@@ -25,13 +25,15 @@ import sys
 import mkl
 sys.path.append("..")
 
+from matplotlib import pyplot as plt
+
 from sklearn.decomposition import IncrementalPCA
 
 import plotly.plotly as py
 import plotly.graph_objs as go
 
-from scripts.common import FileIO
-from scripts.common import Constants
+from common import FileIO
+from common import Constants
 
 
 NUM_SAMPLES = 1000
@@ -76,7 +78,7 @@ def main(date, takeSubset=False):
     grX = X[y==grIndex, :]
 
     # Transform the data using PCA
-    pca = IncrementalPCA(n_components=3)
+    pca = IncrementalPCA(n_components=6)
 
     pointsSUS = pca.fit_transform(susX)
     pointsGR= pca.fit_transform(grX)
@@ -132,6 +134,30 @@ def main(date, takeSubset=False):
     fig = go.Figure(data=data)
     py.iplot(fig, filename='3D PCA Wavelength Plot')
 
+    # Plot the principle components
+    eigenSpectra = pca.components_
+    print eigenSpectra.shape
+
+    plt.subplot(3,1,1)
+    plt.plot(Constants.WAVELENGTHS, eigenSpectra[0, :])
+    plt.title("Principle Components 1 - 3")
+    plt.subplot(3,1,2)
+    plt.plot(Constants.WAVELENGTHS, eigenSpectra[1, :])
+    plt.subplot(3,1,3)
+    plt.plot(Constants.WAVELENGTHS, eigenSpectra[2, :])
+    plt.xlabel("Wavelength (nm)")
+    plt.show()
+
+    plt.clf()
+    plt.subplot(3,1,1)
+    plt.plot(Constants.WAVELENGTHS, eigenSpectra[3, :])
+    plt.title("Principle Components 4 - 6")
+    plt.subplot(3,1,2)
+    plt.plot(Constants.WAVELENGTHS, eigenSpectra[4, :])
+    plt.subplot(3,1,3)
+    plt.plot(Constants.WAVELENGTHS, eigenSpectra[5, :])
+    plt.xlabel("Wavelength (nm)")
+    plt.show()
 
 
 if __name__ == '__main__':
