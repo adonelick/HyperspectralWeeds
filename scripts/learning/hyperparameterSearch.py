@@ -44,7 +44,7 @@ from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 import NeuralNetworkClassifier
 
-from sklearn.grid_search import GridSearchCV
+from sklearn.grid_search import RandomizedSearchCV
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 
