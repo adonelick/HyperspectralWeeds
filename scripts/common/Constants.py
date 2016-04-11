@@ -25,10 +25,13 @@ from sklearn.ensemble import GradientBoostingClassifier
 TRAIN_PROPORTION = 0.7
 
 # Store where the data is located
-DATA_DIRECTORIES = {"2015_1211" : "W:\\Huntly Greenhouse 12-11-2015\\Spectra CSV Files",
-                    "2015_1211_ML" : "W:\\Huntly Greenhouse 12-11-2015\\Machine Learning Data"}
+DATA_DIRECTORIES = {"2015_1211" : "W:\\Huntley Greenhouse 2015_1211\\Spectra CSV Files",
+                    "2016_0413" : "W:\\Huntley Greenhouse 2016_0413\\Spectra CSV Files",
+                    "2015_1211_ML" : "W:\\Huntley Greenhouse 2015_1211\\Machine Learning Data",
+                    "2016_0413_ML" : "W:\\Huntley Greenhouse 2016_0413\\Machine Learning Data"}
 
-MODEL_DIRECTORIES = {"2015_1211" : "W:\\Huntly Greenhouse 12-11-2015\\Machine Learning Models"}
+MODEL_DIRECTORIES = {"2015_1211" : "W:\\Huntley Greenhouse 2015_1211\\Machine Learning Models",
+                     "2016_0413" : "W:\\Huntley Greenhouse 2016_0413\\Machine Learning Models"}
 
 
 TRAINING_DATA_PATH = "TrainingData.mem"
