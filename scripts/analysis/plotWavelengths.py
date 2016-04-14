@@ -74,9 +74,14 @@ def main(date, wavelengths, keywords=[], allSpectra=False):
         filePath = os.path.join(dataPath, name)
         data = FileIO.loadCSV(filePath)
 
-        if allSpectra:
-
+        try:
             rows, columns = data.shape
+            if columns < 2:
+                continue
+        except:
+            continue
+
+        if allSpectra:
 
             xValues = data[:, wavelengthIndex1]
             yValues = data[:, wavelengthIndex2]
@@ -128,53 +133,9 @@ def main(date, wavelengths, keywords=[], allSpectra=False):
     pointsGR = np.array(pointsGR)
     pointsSUS = np.array(pointsSUS)
 
-    traceSUS = go.Scatter3d(
-        x=pointsSUS[:, 0],
-        y=pointsSUS[:, 1],
-        z=pointsSUS[:, 2],
-        mode='markers',
-        name=RESISTANCE_STRINGS[SUSCEPTIBLE],
-        marker=dict(
-            size=5,
-            line=dict(
-                color='rgba(255, 0, 0, 0)',
-                width=0.1
-            ),
-            opacity=0
-        )
-    )
-
-    traceDR = go.Scatter3d(
-        x=pointsDR[:, 0],
-        y=pointsDR[:, 1],
-        z=pointsDR[:, 2],
-        mode='markers',
-        name=RESISTANCE_STRINGS[DR_RESISTANT],
-        marker=dict(
-            size=5,
-            line=dict(
-                color='rgba(0, 255, 0, 0)',
-                width=0.1
-            ),
-            opacity=0
-        )
-    )
-
-    traceGR = go.Scatter3d(
-        x=pointsGR[:, 0],
-        y=pointsGR[:, 1],
-        z=pointsGR[:, 2],
-        mode='markers',
-        name=RESISTANCE_STRINGS[GR_RESISTANT],
-        marker=dict(
-            size=5,
-            line=dict(
-                color='rgba(0, 0, 255, 0)',
-                width=0.1
-            ),
-            opacity=0
-        )
-    )
+    traceSUS = plotPoints(pointsSUS, RESISTANCE_STRINGS[SUSCEPTIBLE], 'rgba(255, 0, 0, 0)')
+    traceDR = plotPoints(pointsDR, RESISTANCE_STRINGS[DR_RESISTANT], 'rgba(0, 255, 0, 0)')
+    traceGR = plotPoints(pointsGR, RESISTANCE_STRINGS[GR_RESISTANT], 'rgba(0, 0, 255, 0)')
 
     layout = go.Layout(
         title='3D Wavelength Plot',
@@ -189,6 +150,44 @@ def main(date, wavelengths, keywords=[], allSpectra=False):
     fig = go.Figure(data=data, layout=layout)
     py.iplot(fig, filename='3D Wavelength Plot')
 
+
+def plotPoints(points, name, colorString):
+    """
+    Plots the given points in 3D space using the plotly library.
+
+    :param points: (numpy array) Array of 3D points
+    :param name: (string) name of the data being plotted
+    :param colorString: (string) Color string for the points in the graph
+
+    :return: (Scatter3d)
+    """
+
+    if len(points) == 0:
+        X = []
+        Y = []
+        Z = []
+    else:
+        X = points[:, 0]
+        Y = points[:, 1]
+        Z = points[:, 2] 
+
+    trace = go.Scatter3d(
+        x=X,
+        y=Y,
+        z=Z,
+        mode='markers',
+        name=name,
+        marker=dict(
+            size=5,
+            line=dict(
+                color=colorString,
+                width=0.1
+            ),
+            opacity=0
+        )
+    )
+
+    return trace 
 
 
 

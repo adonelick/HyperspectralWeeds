@@ -39,7 +39,10 @@ def separateTrainTest(dataPath, filenames, byLeaf=True):
 
         filePath = os.path.join(dataPath, name)
         data = np.loadtxt(filePath, delimiter=',')
-        samples, features = data.shape
+        try:
+            samples, features = data.shape
+        except:
+            continue
         
         # Get the proper label for the data
         name = name.lower()
