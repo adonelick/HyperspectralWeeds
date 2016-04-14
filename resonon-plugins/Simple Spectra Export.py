@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 25 March 2016
+# 13 April 2016
 # Montana State University - Optical Remote Sensing Lab
 
 
@@ -44,14 +44,15 @@ class SimpleSpectraExport(SelectPlugin):
 
         # Load the dataCube as a numpy array
         dataCube = self.datacube.getArray(asBIP=True)
-        dataCubeFilename = self.datacube.getFilename()
+        name = self.datacube.getName()
+        #dataCubeFilename = self.datacube.getFilename()
         pointList = self.pointlist
         numPoints = len(pointList)
         lines, samples, bands = dataCube.shape
 
         # Determine the base name for the output CSV file,
         # which folder the file will be saved in
-        root, name = os.path.split(dataCubeFilename)
+        # root, name = os.path.split(dataCubeFilename)
         name = name[0:-4]
         lighting = self.lighting.value
         startingName = name + '_' + lighting

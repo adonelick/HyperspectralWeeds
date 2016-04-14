@@ -59,7 +59,7 @@ class InternalReflectanceCalibration(SelectPlugin):
         # spectrum of the Spectralon target panel
         data = dataCube[pointlist[:, 1], pointlist[:, 0], :]
         lines, samples, bands = dataCube.shape
-        mean = np.mean(data, axis=0).astype(self.datacube.getTypeChar()).flatten()
+        mean = np.mean(data, axis=0).astype(self.datacube.getDType()).flatten()
 
         # Calculate the correction gain to apply to the rest of the spectra
         reflectances = np.array(map(getSpectralonReflectance, wavelengths))

@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 4 March 2016
+# 13 April 2016
 # Montana State University - Optical Remote Sensing Lab
 
 """
@@ -20,6 +20,8 @@ from resonon.core.data import util
 from MSU_Constants import TEMP_DIRECTORY
 from MSU_Constants import LIGHTING
 from MSU_Constants import SEGMENTATION
+from MSU_Constants import WATERSHED
+from MSU_Constants import GRID
 
 import numpy as np
 import math

@@ -64,7 +64,6 @@ class ClassifyPlugin(SelectPlugin):
         # Load the dataCube as a numpy array
         dataCube = self.datacube.getArray(asBIP=True)
         datacubeName = self.datacube.getName()
-        dataCubeFilename = self.datacube.getFilename()
         pointList = self.pointlist
         lines, samples, bands = dataCube.shape
 
