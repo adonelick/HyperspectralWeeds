@@ -11,16 +11,17 @@ can be run.
 
 Usage:
 
-    python generateTrainingData.py [date] [delete] [keywords] [byLeaf]
+    python generateTrainingData.py [date] [-d] [-k keywords] [-p byLeaf] [-s saveProportion]
 
     date: Data collection date YYYY_MMDD
-    delete: Determines whether or not to delete the existing
+    -d: Determines whether or not to delete the existing
             training/testing data files
     keywords: Data filename keywords
     byLeaf: Should we separate the train/test data
             by leaf, or should we randomly separate
             the data according to a set proportion?
-
+    saveProportion: Amount of each CSV file to save as training
+                    and testing data.
 """
 
 import argparse
@@ -35,7 +36,7 @@ from common.Constants import *
 from common import DataManipulation
 
 
-def main(date, delete, keywords=[], byLeaf=True):
+def main(date, delete, keywords=[], byLeaf=True, saveProportion=0.5):
     """
     Generates ML training and testing data from extracted CSV files
 
@@ -46,6 +47,8 @@ def main(date, delete, keywords=[], byLeaf=True):
     :param byLeaf: (boolean) Should we separate the train/test data
                              by leaf, or should we randomly separate
                              the data according to a set proportion?
+    :param saveProportion: (float) Amount of each CSV file to save as training
+                                   and testing data.
 
     :return: (None)
     """
@@ -72,7 +75,10 @@ def main(date, delete, keywords=[], byLeaf=True):
             os.remove(sampleCountsPath)
 
     # Consolidate the CSV files into training and testing data
-    (train_X, train_y, test_X, test_y) = DataManipulation.separateTrainTest(dataPath, dataFilenames, byLeaf=byLeaf)
+    (train_X, train_y, test_X, test_y) = DataManipulation.separateTrainTest(dataPath, 
+                                                                            dataFilenames, 
+                                                                            byLeaf=byLeaf, 
+                                                                            saveProportion=saveProportion)
 
     # Save the training and testing data in the proper spot
     FileIO.saveTrainingData(date, train_X, train_y)
@@ -89,10 +95,13 @@ if __name__ == '__main__':
                          help="Filename keywords to include in the data")
     parser.add_argument('-p', '--proportional', default=False, action='store_true',
                          help="Divide the training/testing data proportionally by spectra")
+    parser.add_argument('-s', '--saveProportion', default=0.5, type=float, nargs='?',
+                         help="How much of each CSV should we save in the training/testing set?")
 
     args = parser.parse_args()
     byLeaf = not args.proportional
-    main(args.date[0], args.delete, args.keywords, byLeaf)
+    saveProportion = args.saveProportion
+    main(args.date[0], args.delete, args.keywords, byLeaf, saveProportion)
 
 
 

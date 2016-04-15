@@ -14,7 +14,7 @@ import numpy as np
 from Constants import *
 
 
-def separateTrainTest(dataPath, filenames, byLeaf=True):
+def separateTrainTest(dataPath, filenames, byLeaf=True, saveProportion=0.5):
     """
     Consolidates a set of data files (one file per specific leaf)
     into two numpy arrays: one of training data, another for testing
@@ -25,6 +25,7 @@ def separateTrainTest(dataPath, filenames, byLeaf=True):
     :param byLeaf: (boolean) Should we separate the train/test data
                              by leaf, or should we randomly separate
                              the data according to a set proportion?
+    :param saveProportion: (float) Proportion of the data saved as training/testing data
 
     :return: (tuple of np.arrays) Training and testing data
                                   (train_X, train_y, test_X, test_y)
@@ -55,6 +56,10 @@ def separateTrainTest(dataPath, filenames, byLeaf=True):
         else:
             raise Exception("Resistance class not found in filename!")
 
+        np.random.shuffle(data)
+        data = data[0:int(saveProportion*samples), :]
+        samples, features = data.shape
+
         # Now that we have the data, we can sort it into 
         # the training or testing pile
         if byLeaf:
@@ -77,7 +82,6 @@ def separateTrainTest(dataPath, filenames, byLeaf=True):
 
         else:
             
-            np.random.shuffle(data)
             trainIndex = int(TRAIN_PROPORTION * samples)
 
             if train_X == None:
