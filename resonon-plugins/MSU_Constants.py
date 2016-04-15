@@ -9,16 +9,19 @@
 # in new scripts, they should be put in here.
 
 # Dates that data were collected
-COLLECTION_DATES = ["2015_1211", "2016_0413"]
+COLLECTION_DATES = ["2015_1211", "2016_0413", "2016_0414"]
 
 # Store where the data is located
 DATA_DIRECTORIES = {"2015_1211" : "W:\\Huntley Greenhouse 2015_1211\\Spectra CSV Files",
                     "2016_0413" : "W:\\Huntley Greenhouse 2016_0413\\Spectra CSV Files",
+                    "2016_0414" : "W:\\Huntley Greenhouse 2016_0414\\Spectra CSV Files",
                     "2015_1211_ML" : "W:\\Huntley Greenhouse 2015_1211\\Machine Learning Data",
-                    "2016_0413_ML" : "W:\\Huntley Greenhouse 2016_0413\\Machine Learning Data"}
+                    "2016_0413_ML" : "W:\\Huntley Greenhouse 2016_0413\\Machine Learning Data",
+                    "2016_0414_ML" : "W:\\Huntley Greenhouse 2016_0414\\Machine Learning Data"}
 
 MODEL_DIRECTORIES = {"2015_1211" : "W:\\Huntley Greenhouse 2015_1211\\Machine Learning Models",
-                     "2016_0413" : "W:\\Huntley Greenhouse 2016_0413\\Machine Learning Models"}
+                     "2016_0413" : "W:\\Huntley Greenhouse 2016_0413\\Machine Learning Models",
+                     "2016_0414" : "W:\\Huntley Greenhouse 2016_0414\\Machine Learning Models"}
 
 
 # Metadata to be saved with any exported datacubes

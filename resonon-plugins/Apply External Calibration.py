@@ -47,6 +47,7 @@ class ApplyExternalCalibration(CubePlugin):
         """
 
         dataCube = self.datacube.getArray(asBIP=True)
+        datacubeName = self.datacube.getName()
         bands = self.datacube.getBandCount()
         samples = self.datacube.getSampleCount()
         lines = self.datacube.getLineCount()
@@ -67,7 +68,10 @@ class ApplyExternalCalibration(CubePlugin):
                                                wavelengths,
                                                self.datacube.getRotationString())
 
-        return calibratedDatacube
+        # Place the new, calibrated datacube on the workbench for saving,
+        # manipulation, or whatever you want to do with it
+        newName = datacubeName + "_Reflectance"
+        self.wb.addCube(calibratedDatacube, name=newName)
 
 
 def createNewDatacube(workbench, data, wavelengths, rotationString):

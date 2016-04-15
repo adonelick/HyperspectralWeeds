@@ -118,7 +118,7 @@ def main(date, modelType, iterations):
         baseClassifier = clfType()
         clf = RandomizedSearchCV(baseClassifier, param_distributions=PARAMETERS[modelType],
                                                  n_iter=iterations,
-                                                 n_jobs=8)
+                                                 n_jobs=4)
         clf.fit(trainX, trainY)
 
         # Perform some very basic accuracy testing

@@ -36,7 +36,7 @@ class InternalReflectanceCalibration(SelectPlugin):
         """
 
         message = "Remove bad spectral bands?"
-        self.removeBands = SpecBool(message, defaultValue=True)
+        self.removeBands = SpecBool(message, defaultValue=False)
 
 
     def action(self):

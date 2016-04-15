@@ -188,6 +188,7 @@ def watershedSegmentation(wb, dataCube, plantMaterial, lighting, destination, da
     # Remove noise from the image
     kernel = np.ones((3,3), np.uint8)
     opening = cv2.morphologyEx(plantMaterialGray, cv2.MORPH_OPEN, kernel)
+    opening = cv2.erode(opening, kernel, iterations=2)
 
     # Locate the for-sure background area
     sure_bg = cv2.dilate(opening, kernel)
@@ -196,7 +197,6 @@ def watershedSegmentation(wb, dataCube, plantMaterial, lighting, destination, da
     dist_transform, labels = cv2.distanceTransformWithLabels(opening, cv2.DIST_L2, 5)
     ret, sure_fg = cv2.threshold(dist_transform, 0.4*dist_transform.max(), 255, 0)
     sure_fg = cv2.morphologyEx(sure_fg, cv2.MORPH_CLOSE, kernel)
-
     
     # Finding unknown region
     sure_fg = np.uint8(sure_fg)
