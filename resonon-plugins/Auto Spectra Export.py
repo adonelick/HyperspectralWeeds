@@ -17,11 +17,7 @@ from resonon.utils.spec import SpecChoice
 from resonon.utils.spec import SpecFloat
 from resonon.core.data import util
 
-from MSU_Constants import TEMP_DIRECTORY
-from MSU_Constants import LIGHTING
-from MSU_Constants import SEGMENTATION
-from MSU_Constants import WATERSHED
-from MSU_Constants import GRID
+from MSU_Constants import *
 
 import numpy as np
 import math
@@ -43,6 +39,10 @@ class AutoSpectraExport(SelectPlugin):
 
         :return: (None)
         """
+
+        self.date = SpecChoice(label='Select the data collection date for this datacube',
+                               values=COLLECTION_DATES,
+                               defaultValue=COLLECTION_DATES[0])
 
         self.lighting = SpecChoice(label='Select the illumination used for this datacube',
                                    values=LIGHTING,
@@ -76,7 +76,7 @@ class AutoSpectraExport(SelectPlugin):
         datacubeName = self.datacube.getName()
         pointList = self.pointlist
         lines, samples, bands = dataCube.shape
-        destination = self.wb.requestDirectory(message="Please Give a Destination Folder for the Data")
+        destination = DATA_DIRECTORIES[self.date.value]
         if destination == None:
             return
 

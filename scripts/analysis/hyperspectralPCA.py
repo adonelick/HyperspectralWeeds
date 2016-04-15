@@ -36,7 +36,7 @@ from common import FileIO
 from common import Constants
 
 
-NUM_SAMPLES = 1000
+NUM_SAMPLES = 10000
 
 
 def main(date, takeSubset=False):
@@ -136,7 +136,6 @@ def main(date, takeSubset=False):
 
     # Plot the principle components
     eigenSpectra = pca.components_
-    print eigenSpectra.shape
 
     plt.subplot(3,1,1)
     plt.plot(Constants.WAVELENGTHS, eigenSpectra[0, :])

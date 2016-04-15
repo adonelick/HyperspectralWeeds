@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 27 March 2016
+# 15 April 2016
 # Montana State University - Optical Remote Sensing Lab
 
 from spectronon.workbench.plugin import SelectPlugin
@@ -90,15 +90,28 @@ class ClassifyPlugin(SelectPlugin):
             return
 
         classifiedPlantMaterial = np.zeros((lines, samples))
+        spectra = []
+        points = []
+
+        # Collect the spectra we wish to classify (those which are
+        # from the plants, not the background)
         for line in xrange(minLine, maxLine + 1):
             for sample in xrange(minSample, maxSample + 1):
 
                 if (background[line, sample] == PLANT_MATERIAL):
-
                     spectrum = dataCube[line, sample, :]
                     spectrum = np.nan_to_num(spectrum)
-                    label = clf.predict(np.array([spectrum]))
-                    classifiedPlantMaterial[line, sample] = label + 1
+
+                    spectra.append(spectrum)
+                    points.append((line, sample))
+
+        # Using the classifier, label the collected spectra, and build
+        # the classification map
+        labels = clf.predict(np.array(spectra))
+        for i, p in enumerate(points):
+            label = labels[i]
+            line, sample = p
+            classifiedPlantMaterial[line, sample] = label + 1
 
         # Plot the classification map
         cmap = cm.get_cmap('seismic')
