@@ -1,6 +1,6 @@
 # Written by Andrew Donelick
 # andrew.donelick@msu.montana.edu
-# 28 March 2016
+# 16 April 2016
 # Montana State University - Optical Remote Sensing Lab
 
 """
@@ -20,6 +20,7 @@ from MSU_Constants import SPECTRALON_WAVELENGTH_STEP
 from MSU_Constants import BANDS_TO_REMOVE
 
 import numpy as np
+
 
 class InternalReflectanceCalibration(SelectPlugin):
     """Calibrate the spectra to reflectance with an internal target""" 
@@ -51,25 +52,37 @@ class InternalReflectanceCalibration(SelectPlugin):
 
         # Retrieve useful information about the datacube and the user selection
         dataCube = self.datacube.getArray(asBIP=True)
+        lines, samples, bands = dataCube.shape
         datacubeName = self.datacube.getName()
-        pointlist = self.pointlist
+        pointList = self.pointlist
         wavelengths = self.datacube.getWavelengthList()
 
-        # Calculate the mean spectrum of the selection. This will be the mean
-        # spectrum of the Spectralon target panel
-        data = dataCube[pointlist[:, 1], pointlist[:, 0], :]
-        lines, samples, bands = dataCube.shape
-        mean = np.mean(data, axis=0).astype(self.datacube.getDType()).flatten()
+        # Extract the region of interest from the selected points
+        pointLines = map(lambda x: x[1], pointList)
+        pointSamples = map(lambda x: x[0], pointList)
 
-        # Calculate the correction gain to apply to the rest of the spectra
+        minLine = min(pointLines)
+        maxLine = max(pointLines)
+        minSample = min(pointSamples)
+        maxSample = max(pointSamples)
+
+        # Extract the selected data, fetch the spectralon reflectance data        
+        data = dataCube[minLine:maxLine+1, minSample:maxSample+1, :]
         reflectances = np.array(map(getSpectralonReflectance, wavelengths))
-        correction = reflectances / mean
+        assert(maxSample - minSample + 1 == samples, "You did not select a large enough ROI!")
+
+        # Calculate the correction gains to apply to the rest of the spectra
+        corrections = np.zeros((samples, len(wavelengths)), dtype=np.float32)
+        for i in xrange(samples):
+
+            mean = np.mean(data[:, i, :], axis=0).astype(self.datacube.getDType()).flatten()
+            corrections[i, :] = 1.0 * reflectances / mean
 
         # Apply the correction to all of the spectra in the datacube
         reflectanceCube = np.zeros_like(dataCube, dtype=np.float32)
         for i in xrange(lines):
             for j in xrange(samples):
-                reflectanceCube[i, j, :] = correction * dataCube[i, j, :]
+                reflectanceCube[i, j, :] = corrections[j, :] * dataCube[i, j, :]
 
         # If desired, remove the spectral bands from the calibrated datacube
         if self.removeBands.value:
