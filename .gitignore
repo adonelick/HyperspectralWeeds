@@ -9,3 +9,5 @@
 *.tiff
 *.tif
 *.bil
+*.mem
+*.pkl

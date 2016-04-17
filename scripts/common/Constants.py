@@ -131,7 +131,7 @@ HYPERPARAMETERS = {
     SVM : {"kernel" : "rbf"},
     K_NEAREST_NEIGHBORS : {},
     DECISION_TREE : {},
-    RANDOM_FOREST : {"n_jobs" : 4, "n_estimators" : 100},
+    RANDOM_FOREST : {"n_jobs" : 7, "n_estimators" : 250},
     EXTREMELY_RANDOMIZED_TREES : {"n_jobs" : 7, "n_estimators" : 50},
     ADABOOST : {},
     GRADIENT_BOOSTING : {},

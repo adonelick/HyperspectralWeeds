@@ -46,6 +46,8 @@ import NeuralNetworkClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 
+from sklearn.decomposition import PCA
+
 
 def main(date, modelType):
     """
@@ -77,6 +79,11 @@ def main(date, modelType):
     trainX = np.nan_to_num(trainX)
     testX = np.nan_to_num(testX)
 
+    pca = PCA(30)
+    pca.fit(trainX)
+    trainX = pca.transform(trainX)
+    testX = pca.transform(testX)
+
     for modelType in modelsToTrain:
 
         # Train the desired ML model
@@ -88,7 +95,6 @@ def main(date, modelType):
         clf.fit(trainX, trainY)
 
         # Perform some very basic accuracy testing
-
         trainResult = clf.predict(trainX)
         testResult = clf.predict(testX)
 
