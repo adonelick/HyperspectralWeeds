@@ -58,6 +58,12 @@ class AutoSpectraExport(SelectPlugin):
                                        stepsize=0.05, 
                                        defaultValue=0.75)
 
+        self.intensityThreshold = SpecFloat(label='Intensity Threshold', 
+                                            minval=0, 
+                                            maxval=255,
+                                            stepsize=1, 
+                                            defaultValue=10)
+
     def action(self):
         """
         Locates the plant material in an image, divides that plant material up
@@ -98,6 +104,16 @@ class AutoSpectraExport(SelectPlugin):
         plantLocations = ndvi >= self.ndviThreshold.value
         plantMaterial[plantLocations] = 255
         plantMaterial = cv2.bitwise_and(plantMaterial, selectionMask)
+
+        # Threshold the image by intensity to remove shadows from the extracted data
+        redBand = 255*self.datacube.getBandAtWavelength(640)
+        greenBand = 255*self.datacube.getBandAtWavelength(550)
+        blueBand = 255*self.datacube.getBandAtWavelength(460)
+        rgbImage = cv2.merge((blueBand, greenBand, redBand))
+        intensity = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2GRAY)
+        intensity = intensity >= self.intensityThreshold.value
+        intensity = intensity.astype(np.uint8)
+        plantMaterial = cv2.bitwise_and(plantMaterial, intensity)
 
         extractionMethod = self.extractionMethod.value
         lighting = self.lighting.value
@@ -188,7 +204,6 @@ def watershedSegmentation(wb, dataCube, plantMaterial, lighting, destination, da
     # Remove noise from the image
     kernel = np.ones((3,3), np.uint8)
     opening = cv2.morphologyEx(plantMaterialGray, cv2.MORPH_OPEN, kernel)
-    opening = cv2.erode(opening, kernel, iterations=2)
 
     # Locate the for-sure background area
     sure_bg = cv2.dilate(opening, kernel)
